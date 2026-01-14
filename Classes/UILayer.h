@@ -11,8 +11,9 @@ public:
 
     static UILayer* create(int);
 
-    void onButtonPressed(cocos2d::Ref* sender);
-    void onRepeatButtonPressed(cocos2d::Ref* sender);
+    void onButtonPressed(cocos2d::Ref*);
+    void onRepeatButtonPressed(cocos2d::Ref*);
+    void onPauseButtonPressed(cocos2d::Ref*);
 
 };
 
