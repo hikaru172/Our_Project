@@ -6,12 +6,14 @@
 enum class AnimState {
     Idle,
     Walk,
-    Jump
+    Jump,
+    Climb
 };
 
 struct CharacterInput {
     bool left = false;
     bool right = false;
+    bool up = false;
     bool jump = false;
 };
 
@@ -32,13 +34,15 @@ public:
     void onCBHitLeft();
     void onHitRight();
     void onCBHitRight();
+    void onHitLadder();
 
     void onReleaseGround();
     void onReleaseLeft();
     void onCBReleaseLeft();
     void onReleaseRight();
     void onCBReleaseRight();
-
+    void onReleaseLadder();
+ 
     void reset_flip();
 
     bool canMoveLeft() const;
@@ -56,6 +60,8 @@ private:
     cocos2d::Animate* _walkAnim2;
     cocos2d::Animate* _jumpAnim1;
     cocos2d::Animate* _jumpAnim2;
+    cocos2d::Animate* _climbAnim1;
+    cocos2d::Animate* _climbAnim2;
 
     void initAnimations1();
     void initAnimations2();
@@ -66,6 +72,7 @@ private:
     bool _CBleftlimited = false;
     bool _CBrightlimited = false;
     bool _jumplimited = false;
+    bool _climblimited = true;
 };
 
 #endif //__CHARACTERS_H__
