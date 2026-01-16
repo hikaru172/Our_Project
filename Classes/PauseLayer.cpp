@@ -1,19 +1,15 @@
 #include "PauseLayer.h"
 #include "TitleScene.h"
 #include "StageSelectScene.h"
+#include "AudioManager.h"
 
 USING_NS_CC;
-
-//Layer* PauseLayer::createScene()
-//{
-//    return PauseLayer::create();
-//}
 
 bool PauseLayer::init() {
     if (!Layer::init())
         return false;
 
-    //PauseLayer���őS�Ẵ^�b�`���͂����m���邱�ƂŁAPause���͑���UI�ɐG��Ȃ��悤��
+    //PauseLayer内で全てのタッチ入力を検知することで、Pause中は他のUIに触れないように
     auto listener = EventListenerTouchOneByOne::create();
     listener->setSwallowTouches(true);
 
@@ -51,7 +47,7 @@ bool PauseLayer::init() {
         CC_CALLBACK_1(PauseLayer::onTitleButtonPressed, this)
     );
     title_Item->setPosition(Vec2(size.width/ 2.0f, 50.0f));
-    auto title_label = Label::createWithTTF(u8"�^�C�g����", "fonts/RiiPopkkR.otf", 28);
+    auto title_label = Label::createWithTTF(u8"タイトルへ", "fonts/RiiPopkkR.otf", 28);
     title_label->setPosition(button->getContentSize() / 2);
     title_Item->addChild(title_label);
 
@@ -63,7 +59,7 @@ bool PauseLayer::init() {
         CC_CALLBACK_1(PauseLayer::onStageButtonPressed, this)
     );
     stage_Item->setPosition(Vec2(size.width / 2.0f, 150.0f));
-    auto stage_label = Label::createWithTTF(u8"�X�e�[�W�I����", "fonts/RiiPopkkR.otf", 28);
+    auto stage_label = Label::createWithTTF(u8"ステージ選択へ", "fonts/RiiPopkkR.otf", 28);
     stage_label->setPosition(button2->getContentSize() / 2);
     stage_Item->addChild(stage_label);
 
@@ -76,6 +72,7 @@ bool PauseLayer::init() {
 
 void PauseLayer::onResumeButtonPressed(Ref* sender) {
     Director::getInstance()->resume();
+    AudioManager::resumeBGM();
     auto scene = Director::getInstance()->getRunningScene();
     scene->removeChildByName("PauseLayer");
     scene->getPhysicsWorld()->setSpeed(1);
