@@ -29,6 +29,9 @@ bool BGLayer::init(int stageNumber) {
         auto BGsprite2 = Sprite::create("BG/background_clouds.png");
         BGsprite2->setPosition(180.0f + 360.0f * i, 540.0f);
         this->addChild(BGsprite2);
+        //auto BGsprite3 = Sprite::create("BG/background_solid_sky.png");
+        //BGsprite3->setPosition(128.0f + 256.0f * i, 640.0f);
+        //this->addChild(BGsprite3);
     }
 
     return true;
