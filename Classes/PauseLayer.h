@@ -10,7 +10,7 @@ public:
     CREATE_FUNC(PauseLayer);
     virtual bool init();
 
-    //ˆø”(cocos2d::Ref*Œ^)‚ğ‚½‚¹‚È‚¢‚ÆAŠÖ”‚ğMenuItemSprite::create()‚Ìˆø”‚É‚Å‚«‚È‚¢
+    //å¼•æ•°(cocos2d::Ref*å‹)ã‚’æŒãŸã›ãªã„ã¨ã€é–¢æ•°ã‚’MenuItemSprite::create()ã®å¼•æ•°ã«ã§ããªã„
     void onResumeButtonPressed(cocos2d::Ref*);
     void onTitleButtonPressed(cocos2d::Ref*);
     void onStageButtonPressed(cocos2d::Ref*);

@@ -25,7 +25,7 @@ bool UILayer::init(int stageNumber) {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     auto label = Label::createWithTTF(
-        StringUtils::format("Stage %d", stageNumber), //��������t�H�[�}�b�g����֐�
+        StringUtils::format("Stage %d", stageNumber), //文字列をフォーマットする関数
         "fonts/RiiPopkkR.otf",
         32
     );
@@ -38,7 +38,7 @@ bool UILayer::init(int stageNumber) {
     auto normal_Sprite = Sprite::create("UI/stageselect.png");
     auto selected_Sprite = Sprite::create("UI/stageselect2.png");
 
-    //���̓����ł�Sprite��MenuItemSprite�̎q�m�[�h�Ƃ��Ēǉ����Ă���
+    //この内部ではSpriteをMenuItemSpriteの子ノードとして追加している
     auto chara_change_Item = MenuItemSprite::create(
         normal_Sprite,
         selected_Sprite,
@@ -104,14 +104,14 @@ void UILayer::onRepeatButtonPressed(Ref* sender)
 void UILayer::onPauseButtonPressed(Ref* sender)
 {
 
-    // �Q�[���i�s���~�߂�
+    // ゲーム進行を止める
     Director::getInstance()->pause();
     AudioManager::pauseBGM();
 
     auto scene = Director::getInstance()->getRunningScene();
     scene->getPhysicsWorld()->setSpeed(0);
 
-    // PauseLayer��Scene�ɒǉ�
+    // PauseLayerをSceneに追加
     auto pauseLayer = PauseLayer::create();
     pauseLayer->setName("PauseLayer");
 
