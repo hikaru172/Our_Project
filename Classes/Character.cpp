@@ -172,13 +172,17 @@ void Character::update(float dt, const CharacterInput& input) {
     if (input.left && !(_leftlimited || _CBleftlimited)) {
         vel.x = -speed;
         setFlippedX(true);
-        if(!_jumplimited)
+        if (!_jumplimited)
+            _state = AnimState::Walk;
+        else if (_climblimited)
             _state = AnimState::Walk;
     }
     else if (input.right && !(_rightlimited || _CBrightlimited)) {
         vel.x = speed;
         setFlippedX(false);
         if (!_jumplimited)
+            _state = AnimState::Walk;
+        else if (_climblimited)
             _state = AnimState::Walk;
     }
     else if (input.up && !_climblimited) {
@@ -233,7 +237,6 @@ void Character::onCBHitRight() {
 
 void Character::onHitLadder() {
     _climblimited = false;
-    CCLOG("abcccc");
 }
 
 void Character::onReleaseLeft() {

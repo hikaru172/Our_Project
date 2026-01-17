@@ -1,4 +1,4 @@
-#include "PauseLayer.h"
+﻿#include "PauseLayer.h"
 #include "TitleScene.h"
 #include "StageSelectScene.h"
 #include "AudioManager.h"
@@ -6,7 +6,8 @@
 USING_NS_CC;
 
 bool PauseLayer::init() {
-    if (!Layer::init())
+    if (!Layer::init()
+        )
         return false;
 
     //PauseLayer内で全てのタッチ入力を検知することで、Pause中は他のUIに触れないように

@@ -66,19 +66,10 @@ bool Ladder::init(Vec2 start_position, Vec2 end_position, std::string sprite_nam
     this->setPosition(Position);
 
     auto laddermaterial = PhysicsMaterial(1.0f, 0.0f, 0.0f);
-    auto ladderbody = PhysicsBody::createBox(Size(2.0f * Xamount, 48.0f + 48.0f * (Yamount - 2)), laddermaterial, Vec2((Xamount / 2.0f) * 48.0f - 24.0f, (Yamount / 2.0f) * 48.0f - 24.0f));
-    //ladderbody->setDynamic(false);
-    //ladderbody->setCategoryBitmask(0x16);
-    //ladderbody->setCollisionBitmask(0x01);
-    //ladderbody->setContactTestBitmask(0x01);
-    /*ladderbody->setSensor(true);*/
-    
-    /*auto shape = PhysicsShapeBox::create(Size(2.0f * Xamount, 70.0f + 48.0f*(Yamount-2)), laddermaterial, Vec2((Xamount / 2.0f) * 48.0f - 24.0f, (Yamount / 2.0f) * 48.0f - 24.0f));*/
-    /*shape->setSensor(true);*/
+    auto ladderbody = PhysicsBody::createBox(Size(2.0f * Xamount, 48.0f + 48.0f * (Yamount - 2)), laddermaterial, Vec2((Xamount / 2.0f) * 48.0f - 24.0f, ((Yamount-1.0f) / 2.0f) * 48.0f - 24.0f));
     ladderbody->setCategoryBitmask(0x16);
     ladderbody->setCollisionBitmask(0x00);
     ladderbody->setContactTestBitmask(0x01);
-    /*ladderbody->addShape(shape);*/
     ladderbody->setDynamic(false);
     ladderbody->setGravityEnable(false);
 

@@ -104,6 +104,17 @@ bool GameLayer::init(int stageNumber) {
             if (Switch) {
                 _switchPressed = true;
             }
+            else if (Ladder) {
+                _chara->onHitLadder();
+                _chara->onReleaseGround();
+            }
+        }
+
+        if (normalY > 0.5f && chara->getVelocity().y >= 0) { //キャラクターと上のオブジェクトが接触
+            if (Ladder) {
+                _chara->onHitLadder();
+                _chara->onReleaseGround();
+            }
         }
 
         if (normalX < -0.6f) { //キャラクターの左側と左のオブジェクトが接触
@@ -196,6 +207,14 @@ bool GameLayer::init(int stageNumber) {
             _chara->onReleaseGround();
             if (Switch) {
                 _switchPressed = false;
+            }
+            else if (Ladder)
+                _chara->onReleaseLadder();
+        }
+
+        if (normalY > 0.5f) { 
+            if (Ladder) {
+                _chara->onReleaseLadder();
             }
         }
 
@@ -328,13 +347,13 @@ void GameLayer::setupStage() {
     _switch = Switch::create(position, "gimic/switch_red.png");
     _stageRoot->addChild(_switch);
 
-    start_position = Vec2(22, 6);
-    end_position = Vec2(22, 10);
+    start_position = Vec2(4, 7);
+    end_position = Vec2(4, 10);
     _ladder = Ladder::create(start_position, end_position, "ladder/ladder");
     _stageRoot->addChild(_ladder);
 
-    start_position = Vec2(23, 6);
-    end_position = Vec2(23, 10);
+    start_position = Vec2(5, 4);
+    end_position = Vec2(5, 7);
     platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
     _stageRoot->addChild(platform);
 

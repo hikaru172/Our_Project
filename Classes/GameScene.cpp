@@ -52,7 +52,7 @@ void GameScene::onEnter()
 {
     Scene::onEnter();
 
-    AudioManager::playBGM("Sounds/bgm.wav", true);
+    AudioManager::playBGM("Sounds/bgm.mp3", true);
 }
 
 void GameScene::onExit()
