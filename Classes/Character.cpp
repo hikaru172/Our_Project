@@ -28,7 +28,7 @@ bool Character::init(Vec2 position , std::string sprite_name) {
     body->setRotationEnable(false);
     body->setCategoryBitmask(0x01);
     body->setCollisionBitmask(0x02 | 0x04 | 0x08);
-    body->setContactTestBitmask(0x02 | 0x04 | 0x08);
+    body->setContactTestBitmask(0x02 | 0x04 | 0x08 | 0x16);
     body->setVelocityLimit(550.0f);
     this->setPhysicsBody(body);
 
@@ -55,6 +55,10 @@ void Character::initAnimations1() {
     Vector<SpriteFrame*> jumpFrames1;
     jumpFrames1.pushBack(SpriteFrame::create("Characters/character_green_jump.png", Rect(0, 0, 42, 50)));
 
+    Vector<SpriteFrame*> climbFrames1;
+    climbFrames1.pushBack(SpriteFrame::create("Characters/character_green_climb_a.png", Rect(0, 0, 42, 50)));
+    climbFrames1.pushBack(SpriteFrame::create("Characters/character_green_climb_b.png", Rect(0, 0, 42, 50)));
+
     auto idleAnimation1 = Animation::createWithSpriteFrames(idleFrames1, 0.5f);
     idleAnimation1->setLoops(-1);
 
@@ -64,15 +68,18 @@ void Character::initAnimations1() {
     auto jumpAnimation1 = Animation::createWithSpriteFrames(jumpFrames1, 0.2f);
     jumpAnimation1->setLoops(-1);
 
+    auto climbAnimation1 = Animation::createWithSpriteFrames(climbFrames1, 0.2f);
+    climbAnimation1->setLoops(-1);
 
     _idleAnim1 = Animate::create(idleAnimation1);
     _walkAnim1 = Animate::create(walkAnimation1);
     _jumpAnim1 = Animate::create(jumpAnimation1);
+    _climbAnim1 = Animate::create(climbAnimation1);
 
     _idleAnim1->retain();
     _walkAnim1->retain();
     _jumpAnim1->retain();
-
+    _climbAnim1->retain();
 
 }
 
@@ -88,6 +95,10 @@ void Character::initAnimations2() {
     Vector<SpriteFrame*> jumpFrames2;
     jumpFrames2.pushBack(SpriteFrame::create("Characters/character_beige_jump.png", Rect(0, 0, 42, 50)));
 
+    Vector<SpriteFrame*> climbFrames2;
+    climbFrames2.pushBack(SpriteFrame::create("Characters/character_beige_climb_a.png", Rect(0, 0, 42, 50)));
+    climbFrames2.pushBack(SpriteFrame::create("Characters/character_beige_climb_b.png", Rect(0, 0, 42, 50)));
+
     auto idleAnimation2 = Animation::createWithSpriteFrames(idleFrames2, 0.5f);
     idleAnimation2->setLoops(-1);
 
@@ -97,14 +108,18 @@ void Character::initAnimations2() {
     auto jumpAnimation2 = Animation::createWithSpriteFrames(jumpFrames2, 0.2f);
     jumpAnimation2->setLoops(-1);
 
+    auto climbAnimation2 = Animation::createWithSpriteFrames(climbFrames2, 0.2f);
+    climbAnimation2->setLoops(-1);
 
     _idleAnim2 = Animate::create(idleAnimation2);
     _walkAnim2 = Animate::create(walkAnimation2);
     _jumpAnim2 = Animate::create(jumpAnimation2);
+    _climbAnim2 = Animate::create(climbAnimation2);
 
     _idleAnim2->retain();
     _walkAnim2->retain();
     _jumpAnim2->retain();
+    _climbAnim2->retain();
 
 }
 
@@ -116,11 +131,13 @@ void Character::changeAnimation(AnimState state) {
     auto idleAnim = _idleAnim1;
     auto walkAnim = _walkAnim1;
     auto jumpAnim = _jumpAnim1;
+    auto climbAnim = _climbAnim1;
 
     if (chara_tag == 2) {
         idleAnim = _idleAnim2;
         walkAnim = _walkAnim2;
         jumpAnim = _jumpAnim2;
+        climbAnim = _climbAnim2;
     }
 
 
@@ -135,6 +152,10 @@ void Character::changeAnimation(AnimState state) {
 
     case AnimState::Jump:
         runAction(jumpAnim);
+        break;
+
+    case AnimState::Climb:
+        runAction(climbAnim);
         break;
     }
 
@@ -151,7 +172,9 @@ void Character::update(float dt, const CharacterInput& input) {
     if (input.left && !(_leftlimited || _CBleftlimited)) {
         vel.x = -speed;
         setFlippedX(true);
-        if(!_jumplimited)
+        if (!_jumplimited)
+            _state = AnimState::Walk;
+        else if (_climblimited)
             _state = AnimState::Walk;
     }
     else if (input.right && !(_rightlimited || _CBrightlimited)) {
@@ -159,6 +182,13 @@ void Character::update(float dt, const CharacterInput& input) {
         setFlippedX(false);
         if (!_jumplimited)
             _state = AnimState::Walk;
+        else if (_climblimited)
+            _state = AnimState::Walk;
+    }
+    else if (input.up && !_climblimited) {
+        vel.x = 0;
+        vel.y = speed;
+        _state = AnimState::Climb;
     }
     else{
         vel.x = 0;
@@ -180,7 +210,6 @@ void Character::update(float dt, const CharacterInput& input) {
         changeAnimation(_state);
         _prevState = _state;
     }
-
 }
 
 void Character::onGround() {
@@ -206,6 +235,10 @@ void Character::onCBHitRight() {
     _CBrightlimited = true;
 }
 
+void Character::onHitLadder() {
+    _climblimited = false;
+}
+
 void Character::onReleaseLeft() {
     _leftlimited = false;
 }
@@ -223,6 +256,10 @@ void Character::onCBReleaseRight() {
 
 void Character::onReleaseGround() {
     _jumplimited = true;
+}
+
+void Character::onReleaseLadder() {
+    _climblimited = true;
 }
 
 bool Character::canMoveLeft() const {

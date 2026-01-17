@@ -13,6 +13,9 @@ public:
 
     static GameScene* create(int);
 
+    void onEnter();
+    void onExit();
+
 private:
     int _stageNumber = 0;
 };

@@ -1,4 +1,4 @@
-#include "StageSelectScene.h"
+ï»¿#include "StageSelectScene.h"
 #include "GameScene.h"
 
 USING_NS_CC;
@@ -17,31 +17,31 @@ static void problemLoading(const char* filename)
 
 bool StageSelectScene::init()
 {
-    //eƒNƒ‰ƒX‚Ì‰Šú‰»‚ª¸”s‚µ‚½‚çA©•ª‚Ì‰Šú‰»‚à’†~
+    //è¦ªã‚¯ãƒ©ã‚¹ã®åˆæœŸåŒ–ãŒå¤±æ•—ã—ãŸã‚‰ã€è‡ªåˆ†ã®åˆæœŸåŒ–ã‚‚ä¸­æ­¢
     if (!Scene::init()) {
         return false;
     }
 
-    //‰æ–ÊƒTƒCƒYæ“¾
-    //visibleSize‚ÍŒ©‚¦‚Ä‚¢‚é—Ìˆæ‚Ì•‚Æ‚‚³
+    //ç”»é¢ã‚µã‚¤ã‚ºå–å¾—
+    //visibleSizeã¯è¦‹ãˆã¦ã„ã‚‹é ˜åŸŸã®å¹…ã¨é«˜ã•
     auto visibleSize = Director::getInstance()->getVisibleSize();
-    //origin‚ÍŒ©‚¦‚Ä‚¢‚é‰æ–Ê—Ìˆæ‚Ì¶‰ºÀ•W
+    //originã¯è¦‹ãˆã¦ã„ã‚‹ç”»é¢é ˜åŸŸã®å·¦ä¸‹åº§æ¨™
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    //Vector‚ÍCocos2d-x “Æ©‚ÌƒRƒ“ƒeƒiƒNƒ‰ƒX‚ÅAŒ^‚ªMenuItem*‚È‚Ì‚ÅAƒƒjƒ…[€–Úiƒ{ƒ^ƒ“‚È‚Çj‚Ìƒ|ƒCƒ“ƒ^‚ğ‚Ü‚Æ‚ß‚ÄŠÇ—‚·‚é“ü‚ê•¨buttons‚ğ’è‹`‚µ‚Ä‚¢‚é
+    //Vectorã¯Cocos2d-x ç‹¬è‡ªã®ã‚³ãƒ³ãƒ†ãƒŠã‚¯ãƒ©ã‚¹ã§ã€å‹ãŒMenuItem*ãªã®ã§ã€ãƒ¡ãƒ‹ãƒ¥ãƒ¼é …ç›®ï¼ˆãƒœã‚¿ãƒ³ãªã©ï¼‰ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã¾ã¨ã‚ã¦ç®¡ç†ã™ã‚‹å…¥ã‚Œç‰©buttonsã‚’å®šç¾©ã—ã¦ã„ã‚‹
     Vector<MenuItem*> buttons;
 
-    //buttonWidth‚ğæ“¾‚·‚é‚½‚ß‚Ì‰¼‚ÌSprite
+    //buttonWidthã‚’å–å¾—ã™ã‚‹ãŸã‚ã®ä»®ã®Sprite
     auto tempSprite = Sprite::create("UI/stageselect.png");
     float buttonWidth = tempSprite->getContentSize().width;
     float buttonHeight = tempSprite->getContentSize().width;
     float spaceX = (visibleSize.width - 6 * buttonWidth) / 7;
-    float spaceY = 0.0; //label‚Ìheight‚É‚æ‚Á‚Ä’l‚ğŒˆ‚ß‚é‚½‚ß‰º‚Å‘ã“ü
+    float spaceY = 0.0; //labelã®heightã«ã‚ˆã£ã¦å€¤ã‚’æ±ºã‚ã‚‹ãŸã‚ä¸‹ã§ä»£å…¥
 
 
-    auto label = Label::createWithTTF(u8"ƒXƒe[ƒW‘I‘ğ", "fonts/RiiPopkkR.otf", 50);
+    auto label = Label::createWithTTF(u8"ã‚¹ãƒ†ãƒ¼ã‚¸é¸æŠ", "fonts/RiiPopkkR.otf", 50);
     if (label == nullptr) {
-        //“Ç‚İ‚İ¸”s‚ÌƒGƒ‰[ˆ—
+        //èª­ã¿è¾¼ã¿å¤±æ•—æ™‚ã®ã‚¨ãƒ©ãƒ¼å‡¦ç†
         problemLoading("'fonts/RiiPopkkR.otf'");
     }
     else {
@@ -54,12 +54,12 @@ bool StageSelectScene::init()
 
     for (int i = 1; i <= 3; i++) {
         for (int j = 1; j <= 6; j++) {
-            //ƒXƒe[ƒW‚²‚Æ‚Ìƒ{ƒ^ƒ“
-            //Cocos2d-x v4 ‚Å‚Í “¯‚¶SpriteƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•¡”‚Ìƒm[ƒh‚É addChild ‚·‚é‚±‚Æ‚Í‚Å‚«‚È‚¢
+            //ã‚¹ãƒ†ãƒ¼ã‚¸ã”ã¨ã®ãƒœã‚¿ãƒ³
+            //Cocos2d-x v4 ã§ã¯ åŒã˜Spriteã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¤‡æ•°ã®ãƒãƒ¼ãƒ‰ã« addChild ã™ã‚‹ã“ã¨ã¯ã§ããªã„
             auto stage_normal_Sprite = Sprite::create("UI/stageselect.png");
             auto stage_selected_Sprite = Sprite::create("UI/stageselect2.png");
 
-            //‚±‚Ì“à•”‚Å‚ÍSprite‚ğMenuItemSprite‚Ìqƒm[ƒh‚Æ‚µ‚Ä’Ç‰Á‚µ‚Ä‚¢‚é
+            //ã“ã®å†…éƒ¨ã§ã¯Spriteã‚’MenuItemSpriteã®å­ãƒãƒ¼ãƒ‰ã¨ã—ã¦è¿½åŠ ã—ã¦ã„ã‚‹
             auto stage_select_Item = MenuItemSprite::create(
                 stage_normal_Sprite,
                 stage_selected_Sprite,
@@ -75,16 +75,16 @@ bool StageSelectScene::init()
                     origin.y + spaceY * (4 - i) + buttonHeight * (4 - i - 0.5f)));
             }
 
-            //‚Ç‚Ìƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚©‚Ì”»•Ê—p‚Éƒ^ƒO•t‚¯
+            //ã©ã®ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‹ã®åˆ¤åˆ¥ç”¨ã«ã‚¿ã‚°ä»˜ã‘
             stage_select_Item->setTag((i - 1) * 6 + j);
 
-            //ƒ{ƒ^ƒ“‚Ìƒ‰ƒxƒ‹‚ğì¬
-            auto button_label = Label::createWithTTF(std::to_string((i - 1) * 6 + j), "fonts/RiiPopkkR.otf", 50); //std::string(i) c C++•W€ƒ‰ƒCƒuƒ‰ƒŠ‚ÌŠÖ”‚ÅA”’l(i)‚ğ•¶š—ñ‚É•ÏŠ·
+            //ãƒœã‚¿ãƒ³ã®ãƒ©ãƒ™ãƒ«ã‚’ä½œæˆ
+            auto button_label = Label::createWithTTF(std::to_string((i - 1) * 6 + j), "fonts/RiiPopkkR.otf", 50); //std::string(i) â€¦ C++æ¨™æº–ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®é–¢æ•°ã§ã€æ•°å€¤(i)ã‚’æ–‡å­—åˆ—ã«å¤‰æ›
             button_label->setPosition(stage_normal_Sprite->getContentSize() / 2);
             stage_select_Item->addChild(button_label);
 
-            //Menu ‚É‚Ü‚Æ‚ß‚Ä’Ç‰Á‚·‚é‚½‚ß‚ÉƒxƒNƒ^[‚É“ü‚ê‚é
-            //pushBack() ‚Í buttons ‚É—v‘f‚ğ’Ç‰Á‚·‚éŠÖ”
+            //Menu ã«ã¾ã¨ã‚ã¦è¿½åŠ ã™ã‚‹ãŸã‚ã«ãƒ™ã‚¯ã‚¿ãƒ¼ã«å…¥ã‚Œã‚‹
+            //pushBack() ã¯ buttons ã«è¦ç´ ã‚’è¿½åŠ ã™ã‚‹é–¢æ•°
             buttons.pushBack(stage_select_Item);
         }
     }
@@ -97,12 +97,12 @@ bool StageSelectScene::init()
 }
 
 
-//Ref*‚Ícocos2d-x‚ÌŠî’êƒNƒ‰ƒXAsender‚ÍƒCƒxƒ“ƒg‚ğ”­¶‚³‚¹‚½ƒIƒuƒWƒFƒNƒg
+//Ref*ã¯cocos2d-xã®åŸºåº•ã‚¯ãƒ©ã‚¹ã€senderã¯ã‚¤ãƒ™ãƒ³ãƒˆã‚’ç™ºç”Ÿã•ã›ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 void StageSelectScene::onButtonPressed(Ref* sender)
 {
-    //dynamic_cast‚ğg‚Á‚ÄRef* ‚ğMenuItem*‚ÉƒLƒƒƒXƒg‚µ‚Ä‚¢‚é
+    //dynamic_castã‚’ä½¿ã£ã¦Ref* ã‚’MenuItem*ã«ã‚­ãƒ£ã‚¹ãƒˆã—ã¦ã„ã‚‹
     auto item = dynamic_cast<MenuItem*>(sender);
-    //ƒ^ƒO‚ğæ“¾
+    //ã‚¿ã‚°ã‚’å–å¾—
     int stageNumber = item->getTag();
 
     auto scene = GameScene::createScene(stageNumber);

@@ -5,6 +5,7 @@
 #include "Character.h"
 #include "Switch.h"
 #include "Block.h"
+#include "Ladder.h"
 
 class GameLayer : public cocos2d::Layer {
 public:
@@ -30,6 +31,8 @@ public:
 
     Node* _stageRoot;
 
+    Ladder* _ladder;
+
 private:
 
     int _stageNumber;
@@ -38,6 +41,7 @@ private:
 
     bool _leftPressed = false;
     bool _rightPressed = false;
+    bool _upPressed = false;
     bool _jumpPressed = false;
 
     bool _switchPressed = false;

@@ -4,6 +4,7 @@
 #include "Block.h"
 #include "Character.h"
 #include "Switch.h"
+#include "Ladder.h"
 #include <iostream>
 #include <cmath>
 
@@ -40,6 +41,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* platform = nullptr;
         PhysicsBody* CB = nullptr;
         PhysicsBody* Switch = nullptr;
+        PhysicsBody* Ladder = nullptr;
 
         // 衝突情報を取得
         auto contactData = contact.getContactData();
@@ -79,6 +81,17 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x16) {
+            chara = bodyA;
+            Ladder = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x16 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Ladder = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
         auto vel = chara->getVelocity();
 
         auto tag = chara->getTag();
@@ -91,6 +104,17 @@ bool GameLayer::init(int stageNumber) {
             if (Switch) {
                 _switchPressed = true;
             }
+            else if (Ladder) {
+                _chara->onHitLadder();
+                _chara->onReleaseGround();
+            }
+        }
+
+        if (normalY > 0.5f && chara->getVelocity().y >= 0) { //キャラクターと上のオブジェクトが接触
+            if (Ladder) {
+                _chara->onHitLadder();
+                _chara->onReleaseGround();
+            }
         }
 
         if (normalX < -0.6f) { //キャラクターの左側と左のオブジェクトが接触
@@ -98,6 +122,8 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onCBHitLeft();
             else if (CB && otherbody->getTag() == tag)
                 _other->onCBHitLeft();
+            else if (Ladder)
+                _chara->onHitLadder();
             else 
                 _chara->onHitLeft();
         }
@@ -107,6 +133,8 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onCBHitRight();
             else if (CB && otherbody->getTag() == tag)
                 _other->onCBHitRight();
+            else if (Ladder)
+                _chara->onHitLadder();
             else
                 _chara->onHitRight();
         }
@@ -122,6 +150,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* platform = nullptr;
         PhysicsBody* CB = nullptr;
         PhysicsBody* Switch = nullptr;
+        PhysicsBody* Ladder = nullptr;
 
         auto contactData = contact.getContactData();
         float normalX = contactData->normal.x;
@@ -159,6 +188,17 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x16) {
+            chara = bodyA;
+            Ladder = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x16 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Ladder = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
         auto tag = chara->getTag();
         auto charabody = _chara->getPhysicsBody();
         auto otherbody = _other->getPhysicsBody();
@@ -168,6 +208,14 @@ bool GameLayer::init(int stageNumber) {
             if (Switch) {
                 _switchPressed = false;
             }
+            else if (Ladder)
+                _chara->onReleaseLadder();
+        }
+
+        if (normalY > 0.5f) { 
+            if (Ladder) {
+                _chara->onReleaseLadder();
+            }
         }
 
         if (normalX < -0.6f) {
@@ -175,6 +223,8 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onCBReleaseLeft();
             else if(CB && otherbody->getTag() == tag)
                 _other->onCBReleaseLeft();
+            else if (Ladder)
+                _chara->onReleaseLadder();
             else
                 _chara->onReleaseLeft();
         }
@@ -183,6 +233,8 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onCBReleaseRight();
             else if (CB && otherbody->getTag() == tag)
                 _other->onCBReleaseRight();
+            else if (Ladder)
+                _chara->onReleaseLadder();
             else
                 _chara->onReleaseRight();
         }
@@ -199,6 +251,8 @@ bool GameLayer::init(int stageNumber) {
             _leftPressed = true;
         if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
             _rightPressed = true;
+        if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
+            _upPressed = true;
         if (keyCode == EventKeyboard::KeyCode::KEY_SPACE)
             if(_chara->canJump())
                 _jumpPressed = true;
@@ -210,6 +264,8 @@ bool GameLayer::init(int stageNumber) {
             _leftPressed = false;
         if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
             _rightPressed = false;
+        if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
+            _upPressed = false;
         };
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
@@ -291,6 +347,16 @@ void GameLayer::setupStage() {
     _switch = Switch::create(position, "gimic/switch_red.png");
     _stageRoot->addChild(_switch);
 
+    start_position = Vec2(4, 7);
+    end_position = Vec2(4, 10);
+    _ladder = Ladder::create(start_position, end_position, "ladder/ladder");
+    _stageRoot->addChild(_ladder);
+
+    start_position = Vec2(5, 4);
+    end_position = Vec2(5, 7);
+    platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
+    _stageRoot->addChild(platform);
+
 }
 
 
@@ -301,6 +367,7 @@ void GameLayer::update(float dt){
     input.left = _leftPressed;
     input.right = _rightPressed;
     input.jump = _jumpPressed;
+    input.up = _upPressed;
 
     _chara->update(dt, input);
     _jumpPressed = false;

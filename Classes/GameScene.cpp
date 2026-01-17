@@ -2,6 +2,7 @@
 #include "GameLayer.h"
 #include "UILayer.h"
 #include "BGLayer.h"
+#include "AudioManager.h"
 
 USING_NS_CC;
 
@@ -45,4 +46,16 @@ bool GameScene::init(int stageNumber) {
     this->addChild(BGLayer, 0);
 
     return true;
+}
+
+void GameScene::onEnter()
+{
+    Scene::onEnter();
+
+    AudioManager::playBGM("Sounds/bgm.mp3", true);
+}
+
+void GameScene::onExit()
+{
+    Scene::onExit();
 }
