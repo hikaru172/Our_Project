@@ -1,0 +1,51 @@
+#include "GoalFlag.h"
+
+USING_NS_CC;
+
+GoalFlag* GoalFlag::create(Vec2 position, std::string sprite_name) {
+    GoalFlag* ret = new GoalFlag();
+    if (ret && ret->init(position, sprite_name)) {
+        ret->autorelease();
+        return ret;
+    }
+    CC_SAFE_DELETE(ret);
+
+    return nullptr;
+}
+
+bool GoalFlag::init(Vec2 position, std::string sprite_name) {
+
+    if (!Sprite::initWithFile(sprite_name)) {
+        return false;
+    }
+
+    position.x = position.x * 48.0f + 24.0f;
+    position.y = position.y * 48.0f + 24.0f;
+    this->setPosition(position);
+
+    auto body = PhysicsBody::createBox(Size(12.0f, 12.0f));
+    body->setDynamic(false);
+    body->setCategoryBitmask(0x32);
+    body->setCollisionBitmask(0);
+    body->setContactTestBitmask(0x01);
+    body->setGravityEnable(false);
+
+    size_t pos = sprite_name.find("green");
+    if (pos != std::string::npos) {
+        body->setTag(1);
+    }
+    else {
+        body->setTag(2);
+    }
+
+    this->setPhysicsBody(body);
+    this->setName("Flag");
+
+    return true;
+}
+
+void GoalFlag::getFlag(int charatag) {
+    int tag = this->getPhysicsBody()->getTag();
+    if(tag == charatag)
+        this->removeFromParent();
+}

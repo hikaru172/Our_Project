@@ -5,6 +5,7 @@
 #include "Character.h"
 #include "Switch.h"
 #include "Ladder.h"
+#include "GoalFlag.h"
 #include <iostream>
 #include <cmath>
 
@@ -42,6 +43,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* CB = nullptr;
         PhysicsBody* Switch = nullptr;
         PhysicsBody* Ladder = nullptr;
+        PhysicsBody* Flag = nullptr;
 
         // 衝突情報を取得
         auto contactData = contact.getContactData();
@@ -92,14 +94,34 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x32) {
+            chara = bodyA;
+            Flag = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x32 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Flag = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
         auto vel = chara->getVelocity();
 
         auto tag = chara->getTag();
         auto charabody = _chara->getPhysicsBody();
         auto otherbody = _other->getPhysicsBody();
 
+        if (Flag) {
+            //getNode()はNode*型で返ってくるためキャスト
+            auto flag = dynamic_cast<GoalFlag*>(Flag->getNode());
+            flag->getFlag(tag);
+            return true;
+        }
+
         if (normalY < -0.5f && chara->getVelocity().y <= 0) { //キャラクターの足と下のオブジェクトが接触
             _chara->onGround();
+            CCLOG("onGround");
+
             chara->setVelocity(Vec2(vel.x, 0.0f));
             if (Switch) {
                 _switchPressed = true;
@@ -151,6 +173,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* CB = nullptr;
         PhysicsBody* Switch = nullptr;
         PhysicsBody* Ladder = nullptr;
+        PhysicsBody* Flag = nullptr;
 
         auto contactData = contact.getContactData();
         float normalX = contactData->normal.x;
@@ -199,12 +222,26 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x32) {
+            chara = bodyA;
+            Flag = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x32 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Flag = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
         auto tag = chara->getTag();
         auto charabody = _chara->getPhysicsBody();
         auto otherbody = _other->getPhysicsBody();
 
         if (normalY < -0.5f) {
-            _chara->onReleaseGround();
+            if (!Flag) {
+                _chara->onReleaseGround();
+                CCLOG("release");
+            }
             if (Switch) {
                 _switchPressed = false;
             }
@@ -304,8 +341,8 @@ void GameLayer::setupStage() {
     _other = _chara2;
     _chara->setTag(1);
 
-    _chara->getPhysicsBody()->setTag(10);
-    _other->getPhysicsBody()->setTag(20);
+    _chara->getPhysicsBody()->setTag(1);
+    _other->getPhysicsBody()->setTag(2);
 
     _total = 0.0f;
     _total1 = 0.0f;
@@ -352,11 +389,18 @@ void GameLayer::setupStage() {
     _ladder = Ladder::create(start_position, end_position, "ladder/ladder");
     _stageRoot->addChild(_ladder);
 
-    start_position = Vec2(5, 4);
-    end_position = Vec2(5, 7);
-    platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
-    _stageRoot->addChild(platform);
+    //start_position = Vec2(5, 4);
+    //end_position = Vec2(5, 7);
+    //platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
+    //_stageRoot->addChild(platform);
 
+    position = Vec2(7, 4);
+    _flag = GoalFlag::create(position, "gimic/flag_green.png");
+    _stageRoot->addChild(_flag);
+
+    position = Vec2(13, 6);
+    _flag = GoalFlag::create(position, "gimic/flag_yellow.png");
+    _stageRoot->addChild(_flag);
 }
 
 
@@ -402,6 +446,10 @@ void GameLayer::update(float dt){
         _switch->setState(State::Off);
         _block->setState(State::Off);
     }
+
+    auto item = _stageRoot->getChildByName("Flag");
+    if (!item) //Flagを2つ獲得したとき
+        Director::getInstance()->end();
 }
 
 
