@@ -6,6 +6,7 @@
 #include "Switch.h"
 #include "Block.h"
 #include "Ladder.h"
+#include "GoalFlag.h"
 
 class GameLayer : public cocos2d::Layer {
 public:
@@ -32,6 +33,8 @@ public:
     Node* _stageRoot;
 
     Ladder* _ladder;
+
+    GoalFlag* _flag;
 
 private:
 
