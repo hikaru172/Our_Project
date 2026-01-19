@@ -3,7 +3,7 @@
 USING_NS_CC;
 
 int AudioManager::_bgmId = AudioEngine::INVALID_AUDIO_ID; 
-float AudioManager::_bgmVolume = 0.2f;
+float AudioManager::_bgmVolume = 1.0f;
 
 void AudioManager::playBGM(const std::string& file, bool loop)
 {
