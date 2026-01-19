@@ -49,6 +49,9 @@ public:
     bool canMoveRight() const;
     bool canJump() const;
 
+    void setTriangle();
+    void removeTriangle();
+
 private:
 
     AnimState _state = AnimState::Idle;

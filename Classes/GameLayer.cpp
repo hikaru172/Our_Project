@@ -448,6 +448,8 @@ void GameLayer::chara_change() {
         _total = _total2;
         _chara1fixed = _charafixed;
         _charafixed = _chara2fixed;
+        _chara1->removeTriangle();
+        _chara2->setTriangle();
         _chara1->setLocalZOrder(0);
         _chara2->setLocalZOrder(1); //数字大きいほど手前に来る
         _chara1switchPressed = _switchPressed;
@@ -464,6 +466,8 @@ void GameLayer::chara_change() {
         _total = _total1;
         _chara2fixed = _charafixed;
         _charafixed = _chara1fixed;
+        _chara2->removeTriangle();
+        _chara1->setTriangle();
         _chara2->setLocalZOrder(0);
         _chara1->setLocalZOrder(1);
         _chara2switchPressed = _switchPressed;
