@@ -186,6 +186,10 @@ void Character::update(float dt, const CharacterInput& input) {
             _state = AnimState::Walk;
     }
     else if (input.up && !_climblimited) {
+        auto pos = this->getPositionX();
+        int x;
+        x = pos / 48.0f;
+        this->setPositionX(48.0f * x + 24.0f);
         vel.x = 0;
         vel.y = speed;
         _state = AnimState::Climb;

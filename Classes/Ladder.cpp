@@ -19,8 +19,6 @@ bool Ladder::init(Vec2 start_position, Vec2 end_position, std::string sprite_nam
         return false;
     }
 
-    //auto bottom = false;
-    //auto top = false;
     std::string tmp = sprite_name;
     std::string tmp2 = sprite_name;
     float Xamount = end_position.x - start_position.x + 1.0f; //トータルのブロック数
@@ -58,8 +56,6 @@ bool Ladder::init(Vec2 start_position, Vec2 end_position, std::string sprite_nam
             sprite_name = tmp2;
         }
         sprite_name = tmp;
-        //bottom = false;
-        //top = false;
     }
 
     auto Position = Vec2(24.0f + 48.0f * start_position.x, 12.0f + 48.0f * start_position.y);   

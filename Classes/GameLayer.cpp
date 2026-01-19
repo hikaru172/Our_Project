@@ -5,6 +5,7 @@
 #include "Character.h"
 #include "Switch.h"
 #include "Ladder.h"
+#include "GoalFlag.h"
 #include <iostream>
 #include <cmath>
 
@@ -42,6 +43,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* CB = nullptr;
         PhysicsBody* Switch = nullptr;
         PhysicsBody* Ladder = nullptr;
+        PhysicsBody* Flag = nullptr;
 
         // 衝突情報を取得
         auto contactData = contact.getContactData();
@@ -92,39 +94,64 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x32) {
+            chara = bodyA;
+            Flag = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x32 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Flag = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
         auto vel = chara->getVelocity();
 
         auto tag = chara->getTag();
         auto charabody = _chara->getPhysicsBody();
         auto otherbody = _other->getPhysicsBody();
 
+        if (Flag) {
+            //getNode()はNode*型で返ってくるためキャスト
+            auto flag = dynamic_cast<GoalFlag*>(Flag->getNode());
+            flag->getFlag(tag);
+            return true;
+        }
+
+        if (Ladder) {
+            _chara->onHitLadder();
+            return true;
+        }
+
         if (normalY < -0.5f && chara->getVelocity().y <= 0) { //キャラクターの足と下のオブジェクトが接触
             _chara->onGround();
+            CCLOG("onGround");
+
             chara->setVelocity(Vec2(vel.x, 0.0f));
             if (Switch) {
                 _switchPressed = true;
             }
-            else if (Ladder) {
-                _chara->onHitLadder();
-                _chara->onReleaseGround();
-            }
+            //else if (Ladder) {
+            //    _chara->onHitLadder();
+            //    _chara->onReleaseGround();
+            //}
         }
 
-        if (normalY > 0.5f && chara->getVelocity().y >= 0) { //キャラクターと上のオブジェクトが接触
-            if (Ladder) {
-                _chara->onHitLadder();
-                _chara->onReleaseGround();
-            }
-        }
+        //if (normalY > 0.5f && chara->getVelocity().y >= 0) { //キャラクターと上のオブジェクトが接触
+        //    if (Ladder) {
+        //        _chara->onHitLadder();
+        //        _chara->onReleaseGround();
+        //    }
+        //}
 
         if (normalX < -0.6f) { //キャラクターの左側と左のオブジェクトが接触
             if (CB && charabody->getTag() == tag)
                 _chara->onCBHitLeft();
             else if (CB && otherbody->getTag() == tag)
                 _other->onCBHitLeft();
-            else if (Ladder)
-                _chara->onHitLadder();
-            else 
+            //else if (Ladder)
+            //    _chara->onHitLadder();
+            else if(platform || Switch)
                 _chara->onHitLeft();
         }
 
@@ -133,9 +160,9 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onCBHitRight();
             else if (CB && otherbody->getTag() == tag)
                 _other->onCBHitRight();
-            else if (Ladder)
-                _chara->onHitLadder();
-            else
+            //else if (Ladder)
+            //    _chara->onHitLadder();
+            else if (platform || Switch)
                 _chara->onHitRight();
         }
 
@@ -151,6 +178,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* CB = nullptr;
         PhysicsBody* Switch = nullptr;
         PhysicsBody* Ladder = nullptr;
+        PhysicsBody* Flag = nullptr;
 
         auto contactData = contact.getContactData();
         float normalX = contactData->normal.x;
@@ -199,23 +227,32 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x32) {
+            chara = bodyA;
+            Flag = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x32 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Flag = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
         auto tag = chara->getTag();
         auto charabody = _chara->getPhysicsBody();
         auto otherbody = _other->getPhysicsBody();
 
-        if (normalY < -0.5f) {
-            _chara->onReleaseGround();
-            if (Switch) {
-                _switchPressed = false;
-            }
-            else if (Ladder)
-                _chara->onReleaseLadder();
+        if (Ladder) {
+            _chara->onReleaseLadder();
+            return true;
         }
 
-        if (normalY > 0.5f) { 
-            if (Ladder) {
-                _chara->onReleaseLadder();
-            }
+        if (normalY < -0.5f) {
+            if (!Flag)
+                _chara->onReleaseGround();
+
+            if (Switch)
+                _switchPressed = false;
         }
 
         if (normalX < -0.6f) {
@@ -223,8 +260,6 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onCBReleaseLeft();
             else if(CB && otherbody->getTag() == tag)
                 _other->onCBReleaseLeft();
-            else if (Ladder)
-                _chara->onReleaseLadder();
             else
                 _chara->onReleaseLeft();
         }
@@ -233,8 +268,6 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onCBReleaseRight();
             else if (CB && otherbody->getTag() == tag)
                 _other->onCBReleaseRight();
-            else if (Ladder)
-                _chara->onReleaseLadder();
             else
                 _chara->onReleaseRight();
         }
@@ -304,8 +337,8 @@ void GameLayer::setupStage() {
     _other = _chara2;
     _chara->setTag(1);
 
-    _chara->getPhysicsBody()->setTag(10);
-    _other->getPhysicsBody()->setTag(20);
+    _chara->getPhysicsBody()->setTag(1);
+    _other->getPhysicsBody()->setTag(2);
 
     _total = 0.0f;
     _total1 = 0.0f;
@@ -347,16 +380,23 @@ void GameLayer::setupStage() {
     _switch = Switch::create(position, "gimic/switch_red.png");
     _stageRoot->addChild(_switch);
 
-    start_position = Vec2(4, 7);
+    start_position = Vec2(4, 4);
     end_position = Vec2(4, 10);
     _ladder = Ladder::create(start_position, end_position, "ladder/ladder");
     _stageRoot->addChild(_ladder);
 
-    start_position = Vec2(5, 4);
-    end_position = Vec2(5, 7);
-    platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
-    _stageRoot->addChild(platform);
+    //start_position = Vec2(5, 4);
+    //end_position = Vec2(5, 7);
+    //platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
+    //_stageRoot->addChild(platform);
 
+    position = Vec2(7, 4);
+    _flag = GoalFlag::create(position, "gimic/flag_green.png");
+    _stageRoot->addChild(_flag);
+
+    position = Vec2(13, 6);
+    _flag = GoalFlag::create(position, "gimic/flag_yellow.png");
+    _stageRoot->addChild(_flag);
 }
 
 
@@ -402,6 +442,10 @@ void GameLayer::update(float dt){
         _switch->setState(State::Off);
         _block->setState(State::Off);
     }
+
+    auto item = _stageRoot->getChildByName("Flag");
+    if (!item) //Flagを2つ獲得したとき
+        Director::getInstance()->end();
 }
 
 
