@@ -32,6 +32,11 @@ bool Character::init(Vec2 position , std::string sprite_name) {
     body->setVelocityLimit(550.0f);
     this->setPhysicsBody(body);
 
+    auto triangle = Sprite::create("characters/triangle.png");
+    auto size = this->getContentSize();
+    triangle->setPosition(Vec2(size.width / 2.0f, size.height + 5.0f));
+    triangle->setName("triangle");
+    this->addChild(triangle);
 
     size_t pos = sprite_name.find("green");
     if (pos != std::string::npos) {
@@ -39,6 +44,7 @@ bool Character::init(Vec2 position , std::string sprite_name) {
     }
     else {
         initAnimations2();
+        triangle->setVisible(false);
     }
 
     return true;
@@ -280,6 +286,16 @@ bool Character::canJump() const {
 
 void Character::reset_flip() {
     setFlippedX(false);
+}
+
+void Character::setTriangle() {
+    auto triangle = this->getChildByName("triangle");
+    triangle->setVisible(true);
+}
+
+void Character::removeTriangle() {
+    auto triangle = this->getChildByName("triangle");
+    triangle->setVisible(false);
 }
 
 Character::~Character() {

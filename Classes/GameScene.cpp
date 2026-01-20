@@ -45,17 +45,19 @@ bool GameScene::init(int stageNumber) {
     auto BGLayer = BGLayer::createLayer(_stageNumber);
     this->addChild(BGLayer, 0);
 
+    AudioManager::playBGM("Sounds/bgm.mp3", true);
+
     return true;
 }
 
-void GameScene::onEnter()
-{
-    Scene::onEnter();
-
-    AudioManager::playBGM("Sounds/bgm.mp3", true);
-}
-
-void GameScene::onExit()
-{
-    Scene::onExit();
-}
+//void GameScene::onEnter()
+//{
+//    Scene::onEnter();
+//
+//    AudioManager::playBGM("Sounds/bgm.mp3", true);
+//}
+//
+//void GameScene::onExit()
+//{
+//    Scene::onExit();
+//}

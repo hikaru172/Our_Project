@@ -1,0 +1,101 @@
+#include "StageLoader.h"
+#include "json/document.h"
+#include "platform/CCFileUtils.h"
+
+#include "Platform.h"
+#include "Block.h"
+#include "Switch.h"
+#include "Ladder.h"
+#include "GoalFlag.h"
+
+USING_NS_CC;
+using namespace rapidjson;
+
+void StageLoader::load(const std::string& jsonFile, Node* stageRoot)
+{
+    //FileUtils内のgetStringFromFile()メソッドにより、jsonファイル全体を 1つの文字列にする
+    std::string jsonStr = FileUtils::getInstance()->getStringFromFile(jsonFile);
+
+    Document doc; //docは親子関係の一番上にあるrootノード
+    doc.Parse(jsonStr.c_str()); //メモリ上にノードを生成し、親子関係を構築
+
+    if (!doc.IsObject() || !doc.HasMember("objects"))
+        return;
+
+    //JSONオブジェクトの中から"objects" というキーを持つValue(jsonの一要素)への参照
+    // []はキーを持つValueを指す
+    //参照(&)は別名をつけるだけで中身はそのもの
+    const auto& objects = doc["objects"];
+    for (auto& obj : objects.GetArray()) //objects配列内のオブジェクトを1つずつ参照
+    {
+        std::string type = obj["type"].GetString();
+        std::string image = obj["image"].GetString();
+
+        if (type == "Platform")
+        {
+            Vec2 start(
+                obj["start"][0].GetFloat(),
+                obj["start"][1].GetFloat()
+            );
+            Vec2 end(
+                obj["end"][0].GetFloat(),
+                obj["end"][1].GetFloat()
+            );
+
+            auto platform = Platform::create(start, end, image);
+            stageRoot->addChild(platform);
+        }
+        else if (type == "Block")
+        {
+            Vec2 start(
+                obj["start"][0].GetFloat(),
+                obj["start"][1].GetFloat()
+            );
+            Vec2 end(
+                obj["end"][0].GetFloat(),
+                obj["end"][1].GetFloat()
+            );
+
+            auto block = Block::create(start, end, image);
+            block->setName("block");
+            stageRoot->addChild(block);
+        }
+        else if (type == "Switch")
+        {
+            Vec2 pos(
+                obj["position"][0].GetFloat(),
+                obj["position"][1].GetFloat()
+            );
+
+            auto Switch = Switch::create(pos, image);
+            Switch->setName("switch");
+            stageRoot->addChild(Switch);
+        }
+        else if (type == "Ladder")
+        {
+            Vec2 start(
+                obj["start"][0].GetFloat(),
+                obj["start"][1].GetFloat()
+            );
+            Vec2 end(
+                obj["end"][0].GetFloat(),
+                obj["end"][1].GetFloat()
+            );
+
+            auto ladder = Ladder::create(start, end, image);
+            ladder->setName("ladder");
+            stageRoot->addChild(ladder);
+        }
+        else if (type == "GoalFlag")
+        {
+            Vec2 pos(
+                obj["position"][0].GetFloat(),
+                obj["position"][1].GetFloat()
+            );
+
+            auto flag = GoalFlag::create(pos, image);
+            flag->setName("flag");
+            stageRoot->addChild(flag);
+        }
+    }
+}

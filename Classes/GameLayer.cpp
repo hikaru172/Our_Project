@@ -6,6 +6,7 @@
 #include "Switch.h"
 #include "Ladder.h"
 #include "GoalFlag.h"
+#include "StageLoader.h"
 #include <iostream>
 #include <cmath>
 
@@ -302,8 +303,8 @@ bool GameLayer::init(int stageNumber) {
 
 
 void GameLayer::setupStage() {
-    if (_stageRoot != nullptr) {
-        _stageRoot->removeAllChildren();
+    if (_stageRoot->getChildrenCount() != 0) {
+        _stageRoot->removeAllChildrenWithCleanup(true);
     }
 
     _chara1 = Character::create(Vec2(120.0f, 280.0f), "characters/character_green_idle.png");
@@ -339,49 +340,12 @@ void GameLayer::setupStage() {
 
     //ここから下にステージごとのオブジェクト配置処理を追加していく
 
-    auto start_position = Vec2(0.0f, 0.0f);
-    auto end_position = Vec2(10.0f, 3.0f);
-    auto platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
-    _stageRoot->addChild(platform);
+    StageLoader::load("stage_info/stage1.json", _stageRoot);
+    _block = dynamic_cast<Block*>(_stageRoot->getChildByName("block"));
+    _switch = dynamic_cast<Switch*>(_stageRoot->getChildByName("switch"));
+    _ladder = dynamic_cast<Ladder*>(_stageRoot->getChildByName("ladder"));
+    _flag = dynamic_cast<GoalFlag*>(_stageRoot->getChildByName("flag"));
 
-
-    start_position = Vec2(12, 2);
-    end_position = Vec2(16, 5);
-    platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
-    _stageRoot->addChild(platform);
-
-    start_position = Vec2(17, 2);
-    end_position = Vec2(20, 7);
-    _block = Block::create(start_position, end_position, "Blocks/block_trans_red.png");
-    _stageRoot->addChild(_block);
-
-
-    start_position = Vec2(21, 2);
-    end_position = Vec2(24, 5);
-    platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
-    _stageRoot->addChild(platform);
-
-    auto position = Vec2(14, 6);
-    _switch = Switch::create(position, "gimic/switch_red.png");
-    _stageRoot->addChild(_switch);
-
-    start_position = Vec2(4, 4);
-    end_position = Vec2(4, 10);
-    _ladder = Ladder::create(start_position, end_position, "ladder/ladder");
-    _stageRoot->addChild(_ladder);
-
-    //start_position = Vec2(5, 4);
-    //end_position = Vec2(5, 7);
-    //platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
-    //_stageRoot->addChild(platform);
-
-    position = Vec2(7, 4);
-    _flag = GoalFlag::create(position, "gimic/flag_green.png");
-    _stageRoot->addChild(_flag);
-
-    position = Vec2(13, 6);
-    _flag = GoalFlag::create(position, "gimic/flag_yellow.png");
-    _stageRoot->addChild(_flag);
 }
 
 
@@ -429,8 +393,9 @@ void GameLayer::update(float dt){
     }
 
     auto item = _stageRoot->getChildByName("Flag");
-    if (!item) //Flagを2つ獲得したとき
-        Director::getInstance()->end();
+    //if (!item) //Flagを2つ獲得したとき
+    //    Director::getInstance()->end();
+
 }
 
 
@@ -448,6 +413,8 @@ void GameLayer::chara_change() {
         _total = _total2;
         _chara1fixed = _charafixed;
         _charafixed = _chara2fixed;
+        _chara1->removeTriangle();
+        _chara2->setTriangle();
         _chara1->setLocalZOrder(0);
         _chara2->setLocalZOrder(1); //数字大きいほど手前に来る
         _chara1switchPressed = _switchPressed;
@@ -464,6 +431,8 @@ void GameLayer::chara_change() {
         _total = _total1;
         _chara2fixed = _charafixed;
         _charafixed = _chara1fixed;
+        _chara2->removeTriangle();
+        _chara1->setTriangle();
         _chara2->setLocalZOrder(0);
         _chara1->setLocalZOrder(1);
         _chara2switchPressed = _switchPressed;
