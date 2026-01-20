@@ -1,0 +1,38 @@
+{
+    "objects": [
+        {
+            "type": "Platform",
+            "start": [ 0, 0 ],
+            "end": [ 10, 3 ],
+            "image": "Platforms/terrain_grass_block"
+        },
+        {
+            "type": "Platform",
+            "start": [ 12, 2 ],
+            "end": [ 16, 5 ],
+            "image": "Platforms/terrain_grass_block"
+        },
+        {
+            "type": "Block",
+            "start": [ 17, 2 ],
+            "end": [ 20, 7 ],
+            "image": "Blocks/block_trans_red.png"
+        },
+        {
+            "type": "Switch",
+            "position": [ 14, 6 ],
+            "image": "gimic/switch_red.png"
+        },
+        {
+            "type": "Ladder",
+            "start": [ 4, 4 ],
+            "end": [ 4, 10 ],
+            "image": "ladder/ladder"
+        },
+        {
+            "type": "GoalFlag",
+            "position": [ 7, 4 ],
+            "image": "gimic/flag_green.png"
+        }
+    ]
+}
