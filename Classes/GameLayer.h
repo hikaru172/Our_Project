@@ -36,6 +36,9 @@ public:
 
     GoalFlag* _flag;
 
+    /*EventKeyboard::KeyCode _currentKey = EventKeyboard::KeyCode::KEY_NONE;*/
+    std::vector<EventKeyboard::KeyCode> _currentKey;
+
 private:
 
     int _stageNumber;
@@ -45,6 +48,7 @@ private:
     bool _leftPressed = false;
     bool _rightPressed = false;
     bool _upPressed = false;
+    bool _downPressed = false;
     bool _jumpPressed = false;
 
     bool _switchPressed = false;

@@ -266,16 +266,28 @@ bool GameLayer::init(int stageNumber) {
     //キー入力listener↓
     auto listener = EventListenerKeyboard::create();
     listener->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event* event) { //[]はラムダ式(無名関数)
-        if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
+        if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
             _leftPressed = true;
-        if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+            _currentKey.push_back(keyCode);
+        }
+        if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
             _rightPressed = true;
-        if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
+            _currentKey.push_back(keyCode);
+        }
+        if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
             _upPressed = true;
-        if (keyCode == EventKeyboard::KeyCode::KEY_SPACE)
-            if(_chara->canJump())
+            _currentKey.push_back(keyCode);
+        }
+        if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {    //ほかの矢印キーと重ねて押したときにジャンプできない不具合修正のため
+            _downPressed = true;
+        }
+        if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
+            if (_chara->canJump()) {
                 _jumpPressed = true;
-        };
+            }
+        }
+        /*_currentKey.push_back(keyCode);*/
+    };
 
 
     listener->onKeyReleased = [&](EventKeyboard::KeyCode keyCode, Event* event) {
@@ -285,7 +297,14 @@ bool GameLayer::init(int stageNumber) {
             _rightPressed = false;
         if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
             _upPressed = false;
-        };
+        if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
+            _downPressed = false;
+
+        auto it = std::find(_currentKey.begin(), _currentKey.end(), keyCode);
+        if (it != _currentKey.end())
+            _currentKey.erase(it);
+
+    };
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
@@ -357,8 +376,9 @@ void GameLayer::update(float dt){
     input.right = _rightPressed;
     input.jump = _jumpPressed;
     input.up = _upPressed;
+    input.down = _downPressed;
 
-    _chara->update(dt, input);
+    _chara->update(dt, input, _currentKey);
     _jumpPressed = false;
 
     float screenHalf = Director::getInstance()->getVisibleSize().width * 0.5f;
