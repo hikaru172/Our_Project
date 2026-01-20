@@ -168,30 +168,36 @@ void Character::changeAnimation(AnimState state) {
 }
 
 
-void Character::update(float dt, const CharacterInput& input) {
+void Character::update(float dt, const CharacterInput& input, const std::vector<EventKeyboard::KeyCode>& currentKey) {
 
     auto body = this->getPhysicsBody();
     Vec2 vel = body->getVelocity();
     float speed = 200.0f;
+    //CCLOG("currentKey : %d", currentKey.size());
 
-
-    if (input.left && !(_leftlimited || _CBleftlimited)) {
+    if (currentKey.empty()) {
+        vel.x = 0;
+        if (_state != AnimState::Jump) {
+            _state = AnimState::Idle;
+        }
+    }
+    else if (currentKey.back() == EventKeyboard::KeyCode::KEY_LEFT_ARROW && input.left && !(_leftlimited || _CBleftlimited)) {
         vel.x = -speed;
         setFlippedX(true);
         if (!_jumplimited)
             _state = AnimState::Walk;
         else if (_climblimited)
-            _state = AnimState::Walk;
+            _state = AnimState::Jump;
     }
-    else if (input.right && !(_rightlimited || _CBrightlimited)) {
+    else if (currentKey.back() == EventKeyboard::KeyCode::KEY_RIGHT_ARROW && input.right && !(_rightlimited || _CBrightlimited)) {
         vel.x = speed;
         setFlippedX(false);
         if (!_jumplimited)
             _state = AnimState::Walk;
         else if (_climblimited)
-            _state = AnimState::Walk;
+            _state = AnimState::Jump;
     }
-    else if (input.up && !_climblimited) {
+    else if (currentKey.back() == EventKeyboard::KeyCode::KEY_UP_ARROW && input.up && !_climblimited) {
         auto pos = this->getPositionX();
         int x;
         x = pos / 48.0f;
@@ -200,26 +206,34 @@ void Character::update(float dt, const CharacterInput& input) {
         vel.y = speed;
         _state = AnimState::Climb;
     }
-    else{
-        vel.x = 0;
-        if (_state != AnimState::Jump) {
+    else if ((input.left || input.right) && (_leftlimited || _CBleftlimited || _rightlimited || _CBrightlimited)) { //¶‰E‚Ålimited‚ª‚©‚©‚Á‚Ä‚¢‚é‚Æ‚«‚É‚à_state‚ðWalk‚³‚¹‚é‚æ‚¤‚É‚·‚é‚½‚ß
+        vel.x = 0;  //‚±‚ê‚ª‚È‚­‚Ä‚à‘¬“x‚Ù‚Ú0‚É‚È‚Á‚Ä‚é‚ª,”O‚Ì‚½‚ß‘‚¢‚Ä‚é
+        _state = AnimState::Walk;
+    }
+    else if (input.up && _climblimited) {
+        if ((input.left || input.right)) {
+            _state = AnimState::Walk;   //‚»‚Ì‚Ü‚Ü
+        }
+        else {
             _state = AnimState::Idle;
+            vel.x = 0.0f;
         }
     }
 
 
     if (input.jump && !_jumplimited) {
         vel.y = 500.0f;
-        _jumplimited = true;
         _state = AnimState::Jump;
-    }  
+    }
 
+    /*CCLOG("vel.x %f", vel.x);*/
     body->setVelocity(vel);
 
     if (_state != _prevState) {
         changeAnimation(_state);
         _prevState = _state;
     }
+
 }
 
 void Character::onGround() {

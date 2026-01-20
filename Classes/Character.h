@@ -3,6 +3,8 @@
 
 #include "cocos2d.h" 
 
+USING_NS_CC;
+
 enum class AnimState {
     Idle,
     Walk,
@@ -14,6 +16,7 @@ struct CharacterInput {
     bool left = false;
     bool right = false;
     bool up = false;
+    bool down = false;
     bool jump = false;
 };
 
@@ -27,7 +30,7 @@ public:
     virtual bool init(cocos2d::Vec2, std::string);
 
 
-    void update(float, const CharacterInput&);
+    void update(float, const CharacterInput&, const std::vector<EventKeyboard::KeyCode>&);
 
     void onGround();
     void onHitLeft();
