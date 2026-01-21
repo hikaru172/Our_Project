@@ -211,12 +211,15 @@ void Character::update(float dt, const CharacterInput& input, const std::vector<
         _state = AnimState::Walk;
     }
     else if (input.up && _climblimited) {
-        if ((input.left || input.right)) {
+        if (_state == AnimState::Walk) {
             _state = AnimState::Walk;   //‚»‚Ì‚Ü‚Ü
+            if (!input.right && !input.left) {
+                vel.x = 0.0f;
+                _state = AnimState::Idle;
+            }
         }
-        else {
-            _state = AnimState::Idle;
-            vel.x = 0.0f;
+        else if (_state == AnimState::Jump) {
+            _state = AnimState::Jump;   //‚»‚Ì‚Ü‚Ü
         }
     }
 

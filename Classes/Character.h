@@ -77,7 +77,7 @@ private:
     bool _rightlimited = false;
     bool _CBleftlimited = false;
     bool _CBrightlimited = false;
-    bool _jumplimited = false;
+    bool _jumplimited = true;
     bool _climblimited = true;
 };
 

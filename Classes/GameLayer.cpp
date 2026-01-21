@@ -331,9 +331,6 @@ void GameLayer::setupStage() {
     _stageRoot->addChild(_chara1, 1);
     _stageRoot->addChild(_chara2, 0);
 
-    _chara1->onGround();
-    _chara2->onGround();
-
     _chara1->reset_flip();
     _chara2->reset_flip();
 
@@ -384,14 +381,6 @@ void GameLayer::update(float dt){
     float screenHalf = Director::getInstance()->getVisibleSize().width * 0.5f;
     float charaX = _chara->getPositionX();
     float speed = 200.0f;
-    if (charaX > screenHalf) {
-        if (_leftPressed && _chara->canMoveLeft()) {
-            _total += dt;
-        }
-        else if (_rightPressed && _chara->canMoveRight()) {
-            _total -= dt;
-        }
-    }
 
     if (_total * speed > 0.0f) {
         _total = 0.0f;
@@ -416,6 +405,17 @@ void GameLayer::update(float dt){
     //if (!item) //Flagを2つ獲得したとき
     //    Director::getInstance()->end();
 
+    if (charaX > screenHalf) {
+        if (_currentKey.empty()) {
+            return;
+        }
+        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_LEFT_ARROW && _chara->canMoveLeft()) {
+            _total += dt;
+        }
+        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_RIGHT_ARROW && _chara->canMoveRight()) {
+            _total -= dt;
+        }
+    }
 }
 
 
