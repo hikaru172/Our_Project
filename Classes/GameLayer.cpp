@@ -416,7 +416,6 @@ void GameLayer::update(float dt){
             _total -= dt;
         }
     }
-
 }
 
 
