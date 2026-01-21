@@ -19,9 +19,25 @@
             "image": "Blocks/block_trans_red.png"
         },
         {
+            "type": "Block",
+            "start": [ 21, 2 ],
+            "end": [ 25, 7 ],
+            "image": "Blocks/block_trans_blue.png"
+        },
+        {
             "type": "Switch",
             "position": [ 14, 6 ],
             "image": "gimic/switch_red.png"
+        },
+        {
+            "type": "Switch",
+            "position": [ 15, 13 ],
+            "image": "gimic/switch_red.png"
+        },
+        {
+            "type": "Switch",
+            "position": [ 6, 4 ],
+            "image": "gimic/switch_blue.png"
         },
         {
             "type": "Ladder",
@@ -33,6 +49,11 @@
             "type": "GoalFlag",
             "position": [ 7, 4 ],
             "image": "gimic/flag_green.png"
+        },
+        {
+            "type": "GoalFlag",
+            "position": [ 13, 6 ],
+            "image": "gimic/flag_yellow.png"
         }
     ]
 }

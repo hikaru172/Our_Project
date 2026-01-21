@@ -78,6 +78,10 @@ void Switch::setState(State state) {
 
 }
 
+kind_of Switch::get_kind() {
+    return _kind;
+}
+
 Switch::~Switch() {
     CC_SAFE_RELEASE(_extraShape);
 }
