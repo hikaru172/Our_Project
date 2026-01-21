@@ -140,6 +140,7 @@ bool GameLayer::init(int stageNumber) {
 
         if (normalY < -0.5f && chara->getVelocity().y <= 0) { //キャラクターの足と下のオブジェクトが接触
             _chara->onGround();
+            _other->onGround();
             chara->setVelocity(Vec2(vel.x, 0.0f));
             if (Swi) {
                 _switchPressed = true;
@@ -357,6 +358,8 @@ void GameLayer::setupStage() {
     _chara2 = Character::create(Vec2(70.0f, 280.0f), "characters/character_beige_idle.png");
     _stageRoot->addChild(_chara1, 1);
     _stageRoot->addChild(_chara2, 0);
+
+    _on_switch_kind.clear();
 
     _chara1->reset_flip();
     _chara2->reset_flip();

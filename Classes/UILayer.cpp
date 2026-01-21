@@ -124,3 +124,8 @@ bool UILayer::getPause()
 {
     return _pause;
 }
+
+void UILayer::endPause()
+{
+    _pause = false;
+}

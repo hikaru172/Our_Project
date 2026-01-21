@@ -131,7 +131,6 @@ bool PauseLayer::init() {
         CCLOG("percent = %f", percent);
 
         // ここで音量などを変更
-         /*AudioEngine::setVolume(id, percent);*/
         AudioManager::setBGMVolume(percent);
     };
     sound_listener->onTouchEnded = [=](Touch* touch, Event* event) {
@@ -148,8 +147,7 @@ bool PauseLayer::init() {
 }
 
 void PauseLayer::onResumeButtonPressed(Ref* sender) {
-    /*Director::getInstance()->resume();*/
-    UILayer* _pause = false;
+    dynamic_cast<UILayer*>(Director::getInstance()->getRunningScene()->getChildByName("UILayer"))->endPause();
     AudioManager::resumeBGM();
     auto scene = Director::getInstance()->getRunningScene();
     scene->removeChildByName("PauseLayer");
