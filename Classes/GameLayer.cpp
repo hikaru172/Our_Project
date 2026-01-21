@@ -7,6 +7,7 @@
 #include "Ladder.h"
 #include "GoalFlag.h"
 #include "StageLoader.h"
+#include "UILayer.h"
 #include <iostream>
 #include <cmath>
 
@@ -285,6 +286,9 @@ bool GameLayer::init(int stageNumber) {
     //キー入力listener↓
     auto listener = EventListenerKeyboard::create();
     listener->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event* event) { //[]はラムダ式(無名関数)
+        auto pause = dynamic_cast<UILayer*>(Director::getInstance()->getRunningScene()->getChildByName("UILayer"))->getPause();
+        if (pause)
+            return;
         if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
             _leftPressed = true;
             _currentKey.push_back(keyCode);

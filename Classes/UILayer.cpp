@@ -105,7 +105,9 @@ void UILayer::onPauseButtonPressed(Ref* sender)
 {
 
     // ゲーム進行を止める
-    Director::getInstance()->pause();
+    /*Director::getInstance()->pause();*/
+    _pause = true;
+
     AudioManager::pauseBGM();
 
     auto scene = Director::getInstance()->getRunningScene();
@@ -116,4 +118,9 @@ void UILayer::onPauseButtonPressed(Ref* sender)
     pauseLayer->setName("PauseLayer");
 
     Director::getInstance()->getRunningScene()->addChild(pauseLayer, 5);
+}
+
+bool UILayer::getPause()
+{
+    return _pause;
 }

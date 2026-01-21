@@ -2,6 +2,7 @@
 #include "TitleScene.h"
 #include "StageSelectScene.h"
 #include "AudioManager.h"
+#include "UILayer.h"
 
 USING_NS_CC;
 
@@ -63,8 +64,6 @@ bool PauseLayer::init() {
     auto stage_label = Label::createWithTTF(u8"ステージ選択へ", "fonts/RiiPopkkR.otf", 28);
     stage_label->setPosition(button2->getContentSize() / 2);
     stage_Item->addChild(stage_label);
-
-
 
 
     auto base_sound = Sprite::create("UI/slide_horizontal_grey_bar.png");
@@ -141,9 +140,6 @@ bool PauseLayer::init() {
     _eventDispatcher->addEventListenerWithSceneGraphPriority(sound_listener, hangle_sound);
 
 
-
-
-
     auto menu = Menu::create(resume_Item, stage_Item, title_Item,  nullptr);
     menu->setPosition(Vec2::ZERO);
     pause->addChild(menu);
@@ -152,7 +148,8 @@ bool PauseLayer::init() {
 }
 
 void PauseLayer::onResumeButtonPressed(Ref* sender) {
-    Director::getInstance()->resume();
+    /*Director::getInstance()->resume();*/
+    UILayer* _pause = false;
     AudioManager::resumeBGM();
     auto scene = Director::getInstance()->getRunningScene();
     scene->removeChildByName("PauseLayer");
