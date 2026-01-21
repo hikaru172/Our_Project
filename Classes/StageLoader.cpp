@@ -57,7 +57,6 @@ void StageLoader::load(const std::string& jsonFile, Node* stageRoot)
             );
 
             auto block = Block::create(start, end, image);
-            block->setName("block");
             stageRoot->addChild(block);
         }
         else if (type == "Switch")
@@ -68,7 +67,6 @@ void StageLoader::load(const std::string& jsonFile, Node* stageRoot)
             );
 
             auto Switch = Switch::create(pos, image);
-            Switch->setName("switch");
             stageRoot->addChild(Switch);
         }
         else if (type == "Ladder")
@@ -83,7 +81,6 @@ void StageLoader::load(const std::string& jsonFile, Node* stageRoot)
             );
 
             auto ladder = Ladder::create(start, end, image);
-            ladder->setName("ladder");
             stageRoot->addChild(ladder);
         }
         else if (type == "GoalFlag")
@@ -94,7 +91,6 @@ void StageLoader::load(const std::string& jsonFile, Node* stageRoot)
             );
 
             auto flag = GoalFlag::create(pos, image);
-            flag->setName("flag");
             stageRoot->addChild(flag);
         }
     }

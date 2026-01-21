@@ -23,6 +23,7 @@ public:
     virtual bool init(cocos2d::Vec2, std::string);
 
     void setState(State);
+    kind_of get_kind();
 
 private:
     State _state = State::Off; //Switch凹み、ブロック透明状態がOn

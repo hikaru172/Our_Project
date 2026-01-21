@@ -27,16 +27,15 @@ public:
     Character* _chara1;
     Character* _chara2;
 
-    Switch* _switch;
-    Block* _block;
+    std::vector<Switch*> _switch;
+    std::vector<Block*> _block;
+    std::vector<Ladder*> _ladder;
+    std::vector<GoalFlag*> _flag;
+
+    std::vector<kind_of> _on_switch_kind;
 
     Node* _stageRoot;
 
-    Ladder* _ladder;
-
-    GoalFlag* _flag;
-
-    /*EventKeyboard::KeyCode _currentKey = EventKeyboard::KeyCode::KEY_NONE;*/
     std::vector<EventKeyboard::KeyCode> _currentKey;
 
 private:

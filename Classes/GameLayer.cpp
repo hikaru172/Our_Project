@@ -42,7 +42,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* chara = nullptr;
         PhysicsBody* platform = nullptr;
         PhysicsBody* CB = nullptr;
-        PhysicsBody* Switch = nullptr;
+        PhysicsBody* Swi = nullptr;
         PhysicsBody* Ladder = nullptr;
         PhysicsBody* Flag = nullptr;
 
@@ -64,11 +64,11 @@ bool GameLayer::init(int stageNumber) {
         
         if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x04) {
             chara = bodyA;
-            Switch = bodyB;
+            Swi = bodyB;
         }
         else if (bodyA->getCategoryBitmask() == 0x04 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
-            Switch = bodyA;
+            Swi = bodyA;
             normalX *= -1;
             normalY *= -1;
         }
@@ -112,6 +112,19 @@ bool GameLayer::init(int stageNumber) {
         auto charabody = _chara->getPhysicsBody();
         auto otherbody = _other->getPhysicsBody();
 
+        if (dynamic_cast<Character*>(chara->getNode()) != _chara) { //操作中のキャラと今接触したキャラが異なる場合
+            if (normalY < -0.5f && Swi) {
+                _charaswitchPressed = true;
+                auto sw = dynamic_cast<Switch*>(Swi->getNode());
+                _on_switch_kind.push_back(sw->get_kind());
+                if (dynamic_cast<Character*>(chara->getNode())->getTag() == 1)
+                    _chara1switchPressed = true;
+                else 
+                    _chara2switchPressed = true;
+            }
+            return true;
+        }
+
         if (Flag) {
             //getNode()はNode*型で返ってくるためキャスト
             auto flag = dynamic_cast<GoalFlag*>(Flag->getNode());
@@ -126,11 +139,11 @@ bool GameLayer::init(int stageNumber) {
 
         if (normalY < -0.5f && chara->getVelocity().y <= 0) { //キャラクターの足と下のオブジェクトが接触
             _chara->onGround();
-            CCLOG("onGround");
-
             chara->setVelocity(Vec2(vel.x, 0.0f));
-            if (Switch) {
+            if (Swi) {
                 _switchPressed = true;
+                auto sw = dynamic_cast<Switch*>(Swi->getNode());
+                _on_switch_kind.push_back(sw->get_kind());
             }
         }
 
@@ -139,7 +152,7 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onCBHitLeft();
             else if (CB && otherbody->getTag() == tag)
                 _other->onCBHitLeft();
-            else if(platform || Switch)
+            else if(platform || Swi)
                 _chara->onHitLeft();
         }
 
@@ -148,7 +161,7 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onCBHitRight();
             else if (CB && otherbody->getTag() == tag)
                 _other->onCBHitRight();
-            else if (platform || Switch)
+            else if (platform || Swi)
                 _chara->onHitRight();
         }
 
@@ -162,7 +175,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* chara = nullptr;
         PhysicsBody* platform = nullptr;
         PhysicsBody* CB = nullptr;
-        PhysicsBody* Switch = nullptr;
+        PhysicsBody* Swi = nullptr;
         PhysicsBody* Ladder = nullptr;
         PhysicsBody* Flag = nullptr;
 
@@ -182,11 +195,11 @@ bool GameLayer::init(int stageNumber) {
         }
         if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x04) {
             chara = bodyA;
-            Switch = bodyB;
+            Swi = bodyB;
         }
         else if (bodyA->getCategoryBitmask() == 0x04 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
-            Switch = bodyA;
+            Swi = bodyA;
             normalX *= -1;
             normalY *= -1;
         }
@@ -237,8 +250,14 @@ bool GameLayer::init(int stageNumber) {
             if (!Flag)
                 _chara->onReleaseGround();
 
-            if (Switch)
+            if (Swi) {
                 _switchPressed = false;
+                auto sw = dynamic_cast<Switch*>(Swi->getNode());
+                kind_of ki = sw->get_kind();
+                auto it = std::find(_on_switch_kind.begin(), _on_switch_kind.end(), ki);
+                if (it != _on_switch_kind.end())
+                    _on_switch_kind.erase(it);
+            }
         }
 
         if (normalX < -0.6f) {
@@ -324,6 +343,10 @@ bool GameLayer::init(int stageNumber) {
 void GameLayer::setupStage() {
     if (_stageRoot->getChildrenCount() != 0) {
         _stageRoot->removeAllChildrenWithCleanup(true);
+        _switch.clear();
+        _block.clear();
+        _ladder.clear();
+        _flag.clear();
     }
 
     _chara1 = Character::create(Vec2(120.0f, 280.0f), "characters/character_green_idle.png");
@@ -360,10 +383,19 @@ void GameLayer::setupStage() {
     //ここから下にステージごとのオブジェクト配置処理を追加していく
 
     StageLoader::load("stage_info/stage1.json", _stageRoot);
-    _block = dynamic_cast<Block*>(_stageRoot->getChildByName("block"));
-    _switch = dynamic_cast<Switch*>(_stageRoot->getChildByName("switch"));
-    _ladder = dynamic_cast<Ladder*>(_stageRoot->getChildByName("ladder"));
-    _flag = dynamic_cast<GoalFlag*>(_stageRoot->getChildByName("flag"));
+    for (auto child : _stageRoot->getChildren())
+    {
+        //dynamic_castは、この場合、childがBlockクラスかその派生クラスだったら Block*型に変換し、違ったらnullptrという
+        //条件付きキャストのためこのように条件として扱うことができる
+        if (auto bl = dynamic_cast<Block*>(child))
+            _block.push_back(bl);
+        else if (auto sw = dynamic_cast<Switch*>(child))
+            _switch.push_back(sw);
+        else if (auto la = dynamic_cast<Ladder*>(child))
+            _ladder.push_back(la);
+        else if (auto fl = dynamic_cast<GoalFlag*>(child))
+            _flag.push_back(fl);
+    }
 
 }
 
@@ -402,14 +434,27 @@ void GameLayer::update(float dt){
     }
 
     if (_switchPressed || _charaswitchPressed) {
-        _switch->setState(State::On);
-        _block->setState(State::On);
-    }
-    else {
+        for (auto sw : _switch) {
+            if (std::find(_on_switch_kind.begin(), _on_switch_kind.end(), sw->get_kind()) != _on_switch_kind.end())
+                sw->setState(State::On);
+            else
+                sw->setState(State::Off);
+        }
+        for (auto bl : _block) {
+            if (std::find(_on_switch_kind.begin(), _on_switch_kind.end(), bl->get_kind()) != _on_switch_kind.end())
+                bl->setState(State::On);
+            else
+                bl->setState(State::Off);
+        }
+    } else {
         _chara->onCBReleaseLeft();
         _chara->onCBReleaseRight();
-        _switch->setState(State::Off);
-        _block->setState(State::Off);
+        for (auto sw : _switch) {
+            sw->setState(State::Off);
+        }
+        for (auto bl : _block) {
+            bl->setState(State::Off);
+        }
     }
 
     auto item = _stageRoot->getChildByName("Flag");
