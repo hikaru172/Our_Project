@@ -40,6 +40,7 @@ bool GameScene::init(int stageNumber) {
     this->addChild(gameLayer, 1);
 
     auto UILayer = UILayer::createLayer(_stageNumber);
+    UILayer->setName("UILayer");
     this->addChild(UILayer, 2);
 
     auto BGLayer = BGLayer::createLayer(_stageNumber);
