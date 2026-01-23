@@ -13,9 +13,12 @@ public:
     static void setBGMVolume(float);
     static float getBGMVolume();
 
-    static void playSE(const std::string&, float);
+    static void playSE(const std::string&);
+    static void setSEVolume(float);
+    static float getSEVolume();
 
 private:
     static int _bgmId;
     static float _bgmVolume;
+    static float _seVolume;
 };
