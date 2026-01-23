@@ -147,6 +147,7 @@ bool PauseLayer::init() {
         real_sound->setScaleX(percent);
         AudioManager::setBGMVolume(percent);
     };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(sound_listener, hangle_sound);
 
     //seのsliderも同様に作成↓
     auto se_base_sound = Sprite::create("UI/slide_horizontal_grey_bar.png");
