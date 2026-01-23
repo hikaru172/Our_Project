@@ -38,6 +38,8 @@ public:
     void onHitRight();
     void onCBHitRight();
     void onHitLadder();
+    void onEnterWater();
+
 
     void onReleaseGround();
     void onReleaseLeft();
@@ -55,6 +57,8 @@ public:
     void setTriangle();
     void removeTriangle();
 
+    bool iswater();
+
 private:
 
     AnimState _state = AnimState::Idle;
@@ -68,6 +72,8 @@ private:
     cocos2d::Animate* _jumpAnim2;
     cocos2d::Animate* _climbAnim1;
     cocos2d::Animate* _climbAnim2;
+    cocos2d::Animate* _sinkAnim1;
+    cocos2d::Animate* _sinkAnim2;
 
     void initAnimations1();
     void initAnimations2();
@@ -79,6 +85,7 @@ private:
     bool _CBrightlimited = false;
     bool _jumplimited = true;
     bool _climblimited = true;
+    bool _iswater = false;
 };
 
 #endif //__CHARACTERS_H__

@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "AudioManager.h"
 
 USING_NS_CC;
 
@@ -20,7 +21,6 @@ bool Character::init(Vec2 position , std::string sprite_name) {
     }
 
     this->setPosition(position);
-
 
     auto material = PhysicsMaterial(1.0f, 0.0f, 0.0f);
     auto body = PhysicsBody::createBox(Size(42.0f , 50.0f), material);
@@ -65,6 +65,10 @@ void Character::initAnimations1() {
     climbFrames1.pushBack(SpriteFrame::create("Characters/character_green_climb_a.png", Rect(0, 0, 42, 50)));
     climbFrames1.pushBack(SpriteFrame::create("Characters/character_green_climb_b.png", Rect(0, 0, 42, 50)));
 
+    Vector<SpriteFrame*> sinkFrames1;
+    sinkFrames1.pushBack(SpriteFrame::create("Characters/character_green_hit.png", Rect(0, 0, 42, 50)));
+    sinkFrames1.pushBack(SpriteFrame::create("Characters/character_green_hit2.png", Rect(0, 0, 42, 50)));
+
     auto idleAnimation1 = Animation::createWithSpriteFrames(idleFrames1, 0.5f);
     idleAnimation1->setLoops(-1);
 
@@ -77,15 +81,20 @@ void Character::initAnimations1() {
     auto climbAnimation1 = Animation::createWithSpriteFrames(climbFrames1, 0.2f);
     climbAnimation1->setLoops(-1);
 
+    auto sinkAnimation1 = Animation::createWithSpriteFrames(sinkFrames1, 0.3f);
+    sinkAnimation1->setLoops(-1);
+
     _idleAnim1 = Animate::create(idleAnimation1);
     _walkAnim1 = Animate::create(walkAnimation1);
     _jumpAnim1 = Animate::create(jumpAnimation1);
     _climbAnim1 = Animate::create(climbAnimation1);
+    _sinkAnim1 = Animate::create(sinkAnimation1);
 
     _idleAnim1->retain();
     _walkAnim1->retain();
     _jumpAnim1->retain();
     _climbAnim1->retain();
+    _sinkAnim1->retain();
 
 }
 
@@ -105,6 +114,10 @@ void Character::initAnimations2() {
     climbFrames2.pushBack(SpriteFrame::create("Characters/character_beige_climb_a.png", Rect(0, 0, 42, 50)));
     climbFrames2.pushBack(SpriteFrame::create("Characters/character_beige_climb_b.png", Rect(0, 0, 42, 50)));
 
+    Vector<SpriteFrame*> sinkFrames2;
+    sinkFrames2.pushBack(SpriteFrame::create("Characters/character_beige_hit.png", Rect(0, 0, 42, 50)));
+    sinkFrames2.pushBack(SpriteFrame::create("Characters/character_beige_hit2.png", Rect(0, 0, 42, 50)));
+
     auto idleAnimation2 = Animation::createWithSpriteFrames(idleFrames2, 0.5f);
     idleAnimation2->setLoops(-1);
 
@@ -117,15 +130,20 @@ void Character::initAnimations2() {
     auto climbAnimation2 = Animation::createWithSpriteFrames(climbFrames2, 0.2f);
     climbAnimation2->setLoops(-1);
 
+    auto sinkAnimation2 = Animation::createWithSpriteFrames(sinkFrames2, 0.3f);
+    sinkAnimation2->setLoops(-1);
+
     _idleAnim2 = Animate::create(idleAnimation2);
     _walkAnim2 = Animate::create(walkAnimation2);
     _jumpAnim2 = Animate::create(jumpAnimation2);
     _climbAnim2 = Animate::create(climbAnimation2);
+    _sinkAnim2 = Animate::create(sinkAnimation2);
 
     _idleAnim2->retain();
     _walkAnim2->retain();
     _jumpAnim2->retain();
     _climbAnim2->retain();
+    _sinkAnim2->retain();
 
 }
 
@@ -173,7 +191,6 @@ void Character::update(float dt, const CharacterInput& input, const std::vector<
     auto body = this->getPhysicsBody();
     Vec2 vel = body->getVelocity();
     float speed = 200.0f;
-    //CCLOG("currentKey : %d", currentKey.size());
 
     if (currentKey.empty()) {
         vel.x = 0;
@@ -315,6 +332,54 @@ void Character::removeTriangle() {
     triangle->setVisible(false);
 }
 
+void Character::onEnterWater()
+{
+    if (_iswater)
+        return;
+
+    _iswater = true;
+
+    //操作・物理を止める
+    this->stopAllActions();
+    this->getPhysicsBody()->setVelocity(Vec2::ZERO);
+    this->getPhysicsBody()->setGravityEnable(false);
+
+    auto up = MoveBy::create(0.5f, Vec2(0, 15));
+    auto down = MoveBy::create(0.5f, Vec2(0, -20));
+
+    auto sink = MoveBy::create(0.5f, Vec2(0, -50));
+
+    auto endCallback = CallFunc::create([this]()
+        {
+            std::string sound_name = "Sounds/";
+            auto tag = this->getTag();
+            if (tag == 1)
+                sound_name.append("chara1_failed.mp3");
+            else if (tag == 2)
+                sound_name.append("chara2_failed.mp3");
+
+            this->removeChildByName("triangle");
+            this->runAction(MoveBy::create(1.0f,Vec2(0,-100)));
+            this->runAction(FadeOut::create(0.5f));
+
+            AudioManager::playSE(sound_name);
+        });
+
+    auto tag = this->getTag();
+    if(tag == 1)
+        this->runAction(_sinkAnim1);
+    else if(tag == 2)
+        this->runAction(_sinkAnim2);
+
+    //アニメーションが終わった後の処理をコールバック関数としてSequenceに入れるために、上で処理をまとめて書いている
+    auto seq = Sequence::create(down, up , down , sink, endCallback, nullptr);
+    this->runAction(seq);
+}
+
+bool Character::iswater() {
+    return _iswater;
+}
+
 Character::~Character() {
     CC_SAFE_RELEASE(_idleAnim1);
     CC_SAFE_RELEASE(_walkAnim1);
@@ -322,4 +387,6 @@ Character::~Character() {
     CC_SAFE_RELEASE(_idleAnim2);
     CC_SAFE_RELEASE(_walkAnim2);
     CC_SAFE_RELEASE(_jumpAnim2);
+    CC_SAFE_RELEASE(_sinkAnim1);
+    CC_SAFE_RELEASE(_sinkAnim2);
 }

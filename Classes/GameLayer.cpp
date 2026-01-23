@@ -10,7 +10,6 @@
 #include "UILayer.h"
 #include "AudioManager.h"
 #include "Water.h"
-
 #include <iostream>
 #include <cmath>
 
@@ -154,7 +153,9 @@ bool GameLayer::init(int stageNumber) {
         }
 
         if (Water) {
-            CCLOG("water hit!!!!!!!");
+            _chara->onEnterWater();
+            _chara_dead = true;
+            _currentKey.clear();
             return true;
         }
 
@@ -323,9 +324,10 @@ bool GameLayer::init(int stageNumber) {
     //キー入力listener↓
     auto listener = EventListenerKeyboard::create();
     listener->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event* event) { //[]はラムダ式(無名関数)
-        _pause = dynamic_cast<UILayer*>(Director::getInstance()->getRunningScene()->getChildByName("UILayer"))->getPause();
-        if (_pause)
+        auto pause = dynamic_cast<UILayer*>(Director::getInstance()->getRunningScene()->getChildByName("UILayer"))->getPause();
+        if (pause || _chara_dead)
             return;
+
         if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
             _leftPressed = true;
             _currentKey.push_back(keyCode);
@@ -396,6 +398,7 @@ void GameLayer::setupStage() {
     _stageRoot->addChild(_chara2, 0);
 
     _on_switch_kind.clear();
+    _currentKey.clear();
 
     _chara1->reset_flip();
     _chara2->reset_flip();
@@ -407,6 +410,8 @@ void GameLayer::setupStage() {
 
     _chara->getPhysicsBody()->setTag(1);
     _other->getPhysicsBody()->setTag(2);
+
+    _chara_dead = false;
 
     _total = 0.0f;
     _total1 = 0.0f;

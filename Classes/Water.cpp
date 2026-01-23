@@ -20,7 +20,7 @@ bool Water::init(Vec2 start_position, Vec2 end_position, std::string sprite_name
     }
 
     std::string tmp = sprite_name;
-    float Xamount = end_position.x - start_position.x + 1.0f; //トータルのブロック数
+    float Xamount = end_position.x - start_position.x + 1.0f; //ﾆ暖ﾂーﾆ耽ﾆ停ｹ窶堙姑置ﾆ陳哉鍛ﾆ誰ﾂ絶�
     float Yamount = end_position.y - start_position.y + 1.0f;
 
     for (float j = 0.0f; j < Yamount; j++) {
@@ -46,12 +46,25 @@ bool Water::init(Vec2 start_position, Vec2 end_position, std::string sprite_name
 
 
     auto material = PhysicsMaterial(1.0f, 0.0f, 0.0f);
-    auto body = PhysicsBody::createBox(Size(48.0f * Xamount, 48.0f * Yamount ), material, Vec2((Xamount / 2.0f) * 48.0f - 24.0f, (Yamount / 2.0f) * 48.0f - 24.0f));
+    auto body = PhysicsBody::createBox(Size(48.0f * Xamount, 48.0f * Yamount - 24.0f), material, Vec2((Xamount / 2.0f) * 48.0f - 24.0f, (Yamount / 2.0f) * 48.0f - 24.0f));
     body->setDynamic(false);
     body->setCategoryBitmask(0x64);
     body->setCollisionBitmask(0x00);
     body->setContactTestBitmask(0x01);
     this->setPhysicsBody(body);
+
+    auto left = MoveBy::create(1.5f, Vec2(-30, 0));
+    auto right = MoveBy::create(1.5f, Vec2(30, 0));
+
+    auto wave = RepeatForever::create(
+        Sequence::create(
+            EaseSineInOut::create(left), 
+            EaseSineInOut::create(right),
+            nullptr
+        )
+    );
+
+    this->runAction(wave);
 
     return true;
 }

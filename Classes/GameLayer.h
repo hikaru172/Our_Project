@@ -44,6 +44,7 @@ private:
     int _stageNumber;
 
     bool _callstop;
+    bool _chara_dead = false;
 
     bool _leftPressed = false;
     bool _rightPressed = false;

@@ -147,6 +147,7 @@ bool PauseLayer::init() {
         real_sound->setScaleX(percent);
         AudioManager::setBGMVolume(percent);
     };
+
     _eventDispatcher->addEventListenerWithSceneGraphPriority(sound_listener, hangle_sound);
 
     //seのsliderも同様に作成↓
@@ -190,7 +191,6 @@ bool PauseLayer::init() {
             auto percent = (pos.x) / (se_size_base.width);
             se_real_sound->setScaleX(percent);
             AudioManager::setSEVolume(percent);
-
             return true;
         }
         return false;
