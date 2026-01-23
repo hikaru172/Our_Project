@@ -8,6 +8,7 @@
 #include "GoalFlag.h"
 #include "StageLoader.h"
 #include "UILayer.h"
+#include "AudioManager.h"
 #include <iostream>
 #include <cmath>
 
@@ -474,8 +475,6 @@ void GameLayer::update(float dt){
 void GameLayer::chara_change() {
     auto now_chara_num = _chara->getTag();
 
-    float screenHalf = Director::getInstance()->getVisibleSize().width * 0.5f;
-
     if (now_chara_num == 1) {
         _chara1 = _chara;
         _other = _chara1;
@@ -512,4 +511,5 @@ void GameLayer::chara_change() {
         _switchPressed = _chara1switchPressed;
     }
 
+    AudioManager::playSE("Sounds/click.mp3");
 }
