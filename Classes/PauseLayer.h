@@ -14,7 +14,6 @@ public:
     void onResumeButtonPressed(cocos2d::Ref*);
     void onTitleButtonPressed(cocos2d::Ref*);
     void onStageButtonPressed(cocos2d::Ref*);
-    void onArrangeSound(cocos2d::Ref*);
 };
 
 #endif //__PAUSE_LAYER_H__

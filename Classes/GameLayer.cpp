@@ -8,6 +8,9 @@
 #include "GoalFlag.h"
 #include "StageLoader.h"
 #include "UILayer.h"
+#include "AudioManager.h"
+#include "Water.h"
+
 #include <iostream>
 #include <cmath>
 
@@ -46,6 +49,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* Swi = nullptr;
         PhysicsBody* Ladder = nullptr;
         PhysicsBody* Flag = nullptr;
+        PhysicsBody* Water = nullptr;
 
         // 衝突情報を取得
         auto contactData = contact.getContactData();
@@ -107,6 +111,17 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x64) {
+            chara = bodyA;
+            Water = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x64 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Water = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
         auto vel = chara->getVelocity();
 
         auto tag = chara->getTag();
@@ -135,6 +150,11 @@ bool GameLayer::init(int stageNumber) {
 
         if (Ladder) {
             _chara->onHitLadder();
+            return true;
+        }
+
+        if (Water) {
+            CCLOG("water hit!!!!!!!");
             return true;
         }
 
@@ -180,6 +200,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* Swi = nullptr;
         PhysicsBody* Ladder = nullptr;
         PhysicsBody* Flag = nullptr;
+        PhysicsBody* Water = nullptr;
 
         auto contactData = contact.getContactData();
         float normalX = contactData->normal.x;
@@ -239,12 +260,27 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x64) {
+            chara = bodyA;
+            Water = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x64 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Water = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
         auto tag = chara->getTag();
         auto charabody = _chara->getPhysicsBody();
         auto otherbody = _other->getPhysicsBody();
 
         if (Ladder) {
             _chara->onReleaseLadder();
+            return true;
+        }
+
+        if (Water) {
             return true;
         }
 
@@ -479,8 +515,6 @@ void GameLayer::update(float dt){
 void GameLayer::chara_change() {
     auto now_chara_num = _chara->getTag();
 
-    float screenHalf = Director::getInstance()->getVisibleSize().width * 0.5f;
-
     if (now_chara_num == 1) {
         _chara1 = _chara;
         _other = _chara1;
@@ -517,4 +551,5 @@ void GameLayer::chara_change() {
         _switchPressed = _chara1switchPressed;
     }
 
+    AudioManager::playSE("Sounds/click.mp3");
 }

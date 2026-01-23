@@ -7,6 +7,7 @@
 #include "Switch.h"
 #include "Ladder.h"
 #include "GoalFlag.h"
+#include "Water.h"
 
 USING_NS_CC;
 using namespace rapidjson;
@@ -31,7 +32,20 @@ void StageLoader::load(const std::string& jsonFile, Node* stageRoot)
         std::string type = obj["type"].GetString();
         std::string image = obj["image"].GetString();
 
-        if (type == "Platform")
+        if (type == "Water") {
+            Vec2 start(
+                obj["start"][0].GetFloat(),
+                obj["start"][1].GetFloat()
+            );
+            Vec2 end(
+                obj["end"][0].GetFloat(),
+                obj["end"][1].GetFloat()
+            );
+
+            auto water = Water::create(start, end, image);
+            stageRoot->addChild(water);
+        }
+        else if (type == "Platform")
         {
             Vec2 start(
                 obj["start"][0].GetFloat(),
