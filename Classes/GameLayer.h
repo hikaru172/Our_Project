@@ -21,6 +21,7 @@ public:
 
     void setupStage(); // ステージ初期化用
 
+    float _sumTime = 0.0f; // クリアタイム用
 
     Character* _chara;
     Character* _other;
@@ -59,6 +60,8 @@ private:
     bool _charaswitchPressed = false;
     bool _chara1switchPressed = false;
     bool _chara2switchPressed = false;
+
+    bool _pause = false;
 
     float _diff = 0.0f;
     float _total = 0.0f;

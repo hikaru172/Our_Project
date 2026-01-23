@@ -103,9 +103,7 @@ void UILayer::onRepeatButtonPressed(Ref* sender)
 
 void UILayer::onPauseButtonPressed(Ref* sender)
 {
-
     // ゲーム進行を止める
-    /*Director::getInstance()->pause();*/
     _pause = true;
 
     AudioManager::pauseBGM();
@@ -128,4 +126,9 @@ bool UILayer::getPause()
 void UILayer::endPause()
 {
     _pause = false;
+}
+
+void UILayer::startPause()
+{
+    _pause = true;
 }

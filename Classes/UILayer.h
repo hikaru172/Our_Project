@@ -16,6 +16,7 @@ public:
     void onPauseButtonPressed(cocos2d::Ref*);
     bool getPause();
     void endPause();
+    void startPause();
 
     bool _pause = false;
 
