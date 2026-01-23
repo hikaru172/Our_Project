@@ -144,7 +144,7 @@ bool GameLayer::init(int stageNumber) {
         if (Flag) {
             //getNode()はNode*型で返ってくるためキャスト
             auto flag = dynamic_cast<GoalFlag*>(Flag->getNode());
-            flag->getFlag(tag);
+            flag->getFlag(tag, _stageRoot, _stageNumber, _sumTime);
             return true;
         }
 
@@ -323,8 +323,8 @@ bool GameLayer::init(int stageNumber) {
     //キー入力listener↓
     auto listener = EventListenerKeyboard::create();
     listener->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event* event) { //[]はラムダ式(無名関数)
-        auto pause = dynamic_cast<UILayer*>(Director::getInstance()->getRunningScene()->getChildByName("UILayer"))->getPause();
-        if (pause)
+        _pause = dynamic_cast<UILayer*>(Director::getInstance()->getRunningScene()->getChildByName("UILayer"))->getPause();
+        if (_pause)
             return;
         if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
             _leftPressed = true;
@@ -420,6 +420,8 @@ void GameLayer::setupStage() {
     _chara1switchPressed = false;
     _chara2switchPressed = false;
 
+    _sumTime = 0.0f;
+
     //ここから下にステージごとのオブジェクト配置処理を追加していく
 
     StageLoader::load("stage_info/stage1.json", _stageRoot);
@@ -457,6 +459,13 @@ void GameLayer::update(float dt){
     float charaX = _chara->getPositionX();
     float speed = 200.0f;
 
+    _sumTime += dt;
+    /*CCLOG("sumTime : %f", _sumTime);*/
+
+    //  GameLayerが機能していないときに、見かけ上の時間を停止させたいが、今のままだとキーボードが起点となってしまっているのが問題
+    if (_pause)
+        _sumTime -= dt;
+
     if (_total * speed > 0.0f) {
         _total = 0.0f;
         this->setPositionX(0.0f);
@@ -488,10 +497,6 @@ void GameLayer::update(float dt){
             bl->setState(State::Off);
         }
     }
-
-    auto item = _stageRoot->getChildByName("Flag");
-    //if (!item) //Flagを2つ獲得したとき
-    //    Director::getInstance()->end();
 
     if (charaX > screenHalf) {
         if (_currentKey.empty()) {

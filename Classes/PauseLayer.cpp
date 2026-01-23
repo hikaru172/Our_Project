@@ -121,6 +121,7 @@ bool PauseLayer::init() {
     sound_listener->onTouchBegan = [=](Touch* touch, Event* event) {
         Vec2 pos = base_sound->convertToNodeSpace(touch->getLocation()); 
         Rect rect = Rect(-size_base_edge.width / 2.0f, 0, size_base.width + size_base_edge.width, size_base.height);
+
         if (rect.containsPoint(pos)) {
             float minX = 0.0f;
             float maxX = size_base.width;
@@ -146,9 +147,6 @@ bool PauseLayer::init() {
         real_sound->setScaleX(percent);
         AudioManager::setBGMVolume(percent);
     };
-
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(sound_listener, hangle_sound);
-
 
     //seのsliderも同様に作成↓
     auto se_base_sound = Sprite::create("UI/slide_horizontal_grey_bar.png");
@@ -224,6 +222,7 @@ void PauseLayer::onResumeButtonPressed(Ref* sender) {
     AudioManager::resumeBGM();
     auto scene = Director::getInstance()->getRunningScene();
     scene->removeChildByName("PauseLayer");
+    scene->getChildByName("GameLayer");
     scene->getPhysicsWorld()->setSpeed(1);
 }
 
@@ -231,7 +230,6 @@ void PauseLayer::onTitleButtonPressed(Ref* sender) {
     auto director = Director::getInstance();
 
     director->resume();
-    this->removeFromParent();
 
     auto titleScene = TitleScene::createScene();
     director->replaceScene(TransitionFade::create(0.5f, titleScene));
@@ -241,7 +239,6 @@ void PauseLayer::onStageButtonPressed(Ref* sender) {
     auto director = Director::getInstance();
 
     director->resume();
-    this->removeFromParent();
 
     auto stageSelectScene = StageSelectScene::createScene();
     director->replaceScene(TransitionFade::create(0.5f, stageSelectScene));
