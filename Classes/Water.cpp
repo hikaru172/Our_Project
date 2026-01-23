@@ -20,7 +20,7 @@ bool Water::init(Vec2 start_position, Vec2 end_position, std::string sprite_name
     }
 
     std::string tmp = sprite_name;
-    float Xamount = end_position.x - start_position.x + 1.0f; //トータルのブロック数
+    float Xamount = end_position.x - start_position.x + 1.0f; //ﾆ暖ﾂーﾆ耽ﾆ停ｹ窶堙姑置ﾆ陳哉鍛ﾆ誰ﾂ絶�
     float Yamount = end_position.y - start_position.y + 1.0f;
 
     for (float j = 0.0f; j < Yamount; j++) {

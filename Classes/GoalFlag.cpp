@@ -1,4 +1,7 @@
 #include "GoalFlag.h"
+#include "ClearLayer.h"
+#include "AudioManager.h"
+#include "UILayer.h"
 
 USING_NS_CC;
 
@@ -44,8 +47,24 @@ bool GoalFlag::init(Vec2 position, std::string sprite_name) {
     return true;
 }
 
-void GoalFlag::getFlag(int charatag) {
+void GoalFlag::getFlag(int charatag, cocos2d::Node* stageRoot, int stageNumber, float sumTime) {
     int tag = this->getPhysicsBody()->getTag();
     if(tag == charatag)
         this->removeFromParent();
+
+    auto item = stageRoot->getChildByName("Flag");
+    if (!item) { //Flag‚ğ2‚ÂŠl“¾‚µ‚½‚Æ‚« 
+        /*Director::getInstance()->end();*/
+
+        // ƒQ[ƒ€is‚ğ~‚ß‚é
+        dynamic_cast<UILayer*>(Director::getInstance()->getRunningScene()->getChildByName("UILayer"))->startPause();
+        AudioManager::pauseBGM();   // ¡‚Ì‚Æ‚±‚ë‚Í~‚ß‚Ä‚¨‚­iŒã‚©‚ç’²®—\’èj
+        auto scene = Director::getInstance()->getRunningScene();
+        scene->getPhysicsWorld()->setSpeed(0);
+        // ClearLayer‚ğScene‚É’Ç‰Á
+        auto clearLayer = ClearLayer::createLayer(stageNumber, sumTime);
+        clearLayer->setName("ClearLayer");
+
+        Director::getInstance()->getRunningScene()->addChild(clearLayer, 5);
+    }
 }

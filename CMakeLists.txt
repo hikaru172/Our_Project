@@ -122,7 +122,7 @@ set(all_code_files
     ${GAME_SOURCE}
     )
 if(NOT ANDROID)
-    add_executable(${APP_NAME} ${all_code_files} "Classes/TitleScene.cpp" "Classes/StageSelectScene.cpp" "Classes/GameScene.cpp" "Classes/GameLayer.cpp" "Classes/Platform.cpp" "Classes/UILayer.cpp" "Classes/BGLayer.cpp" "Classes/Block.cpp" "Classes/Character.cpp" "Classes/Switch.cpp" "Classes/PauseLayer.cpp" "Classes/AudioManager.cpp" "Classes/Ladder.cpp" "Classes/GoalFlag.cpp" "Classes/StageLoader.cpp" "Classes/Water.cpp")
+    add_executable(${APP_NAME} ${all_code_files} "Classes/TitleScene.cpp" "Classes/StageSelectScene.cpp" "Classes/GameScene.cpp" "Classes/GameLayer.cpp" "Classes/Platform.cpp" "Classes/UILayer.cpp" "Classes/BGLayer.cpp" "Classes/Block.cpp" "Classes/Character.cpp" "Classes/Switch.cpp" "Classes/PauseLayer.cpp" "Classes/AudioManager.cpp" "Classes/Ladder.cpp" "Classes/GoalFlag.cpp" "Classes/StageLoader.cpp" "Classes/ClearLayer.cpp" "Classes/Water.cpp")
 else()
     add_library(${APP_NAME} SHARED ${all_code_files})
     add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos/platform/android ${ENGINE_BINARY_PATH}/cocos/platform)
