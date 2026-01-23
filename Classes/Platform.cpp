@@ -19,10 +19,6 @@ bool Platform::init(Vec2 start_position, Vec2 end_position, std::string sprite_n
         return false;
     }
 
-    auto left = false;
-    auto right = false;
-    auto bottom = false;
-    auto top = false;
     std::string tmp = sprite_name;
     std::string tmp2 = sprite_name;
     float Xamount = end_position.x - start_position.x + 1.0f; //トータルのブロック数
@@ -32,11 +28,9 @@ bool Platform::init(Vec2 start_position, Vec2 end_position, std::string sprite_n
         //最上段のときと最下段のときにbottomとtopをつける
         if (j == 0.0f) {
             sprite_name.append("_bottom");
-            bottom = true;
         }
         if (j == Yamount - 1.0f) {
             sprite_name.append("_top");
-            top = true;
         }
 
         tmp2 = sprite_name;
@@ -45,28 +39,20 @@ bool Platform::init(Vec2 start_position, Vec2 end_position, std::string sprite_n
             //右列と左列のときrightとleftつける
             if (i == 0.0f) {
                 sprite_name.append("_left");
-                left = true;
             }
             if (i == Xamount - 1.0f) {
                 sprite_name.append("_right");
-                right = true;
             }
 
             sprite_name.append(".png");
 
-
-            CCLOG("%s", sprite_name.c_str());
             auto sprite = Sprite::create(sprite_name);
             sprite->setPosition(Vec2(48.0f * i, 48.0f * j));
             this->addChild(sprite);
 
             sprite_name = tmp2;
-            left = false;
-            right = false;
         }
         sprite_name = tmp;
-        bottom = false;
-        top = false;
     }
 
     auto Position = Vec2(24.0f + 48.0 * start_position.x, 24.0f + 48.0f * start_position.y);
