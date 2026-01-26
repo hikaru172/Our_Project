@@ -100,6 +100,16 @@ bool ClearLayer::init(int stageNumber, float sumTime) {
     auto star3_base = Sprite::create("UI/clear_star3_outline.png");
     star3_base->setPosition(size.width / 4.0f * 3.0f, size.height / 10.0f * 9.0f);
     clear->addChild(star3_base);
+
+    //auto star1 = Sprite::create("UI/clear_star1.png");
+    //star1->setPosition(star1_base->getContentSize() / 2.0f);
+    //star1_base->addChild(star1);
+    //auto star2 = Sprite::create("UI/clear_star2.png");
+    //star2->setPosition(star2_base->getContentSize() / 2.0f);
+    //star2_base->addChild(star2);
+    //auto star3 = Sprite::create("UI/clear_star3.png");
+    //star3->setPosition(star3_base->getContentSize() / 2.0f);
+    //star3_base->addChild(star3);
     
     // ステージ表示
     auto Stage = Label::createWithTTF(StringUtils::format("Stage %d", stageNumber), "fonts/RiiPopkkR.otf", 28);
