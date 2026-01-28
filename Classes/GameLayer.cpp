@@ -88,33 +88,33 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
-        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x16) {
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x10) {
             chara = bodyA;
             Ladder = bodyB;
         }
-        else if (bodyA->getCategoryBitmask() == 0x16 && bodyB->getCategoryBitmask() == 0x01) {
+        else if (bodyA->getCategoryBitmask() == 0x10 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
             Ladder = bodyA;
             normalX *= -1;
             normalY *= -1;
         }
 
-        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x32) {
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x20) {
             chara = bodyA;
             Flag = bodyB;
         }
-        else if (bodyA->getCategoryBitmask() == 0x32 && bodyB->getCategoryBitmask() == 0x01) {
+        else if (bodyA->getCategoryBitmask() == 0x20 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
             Flag = bodyA;
             normalX *= -1;
             normalY *= -1;
         }
 
-        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x64) {
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x40) {
             chara = bodyA;
             Water = bodyB;
         }
-        else if (bodyA->getCategoryBitmask() == 0x64 && bodyB->getCategoryBitmask() == 0x01) {
+        else if (bodyA->getCategoryBitmask() == 0x40 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
             Water = bodyA;
             normalX *= -1;
@@ -239,33 +239,33 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
-        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x16) {
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x10) {
             chara = bodyA;
             Ladder = bodyB;
         }
-        else if (bodyA->getCategoryBitmask() == 0x16 && bodyB->getCategoryBitmask() == 0x01) {
+        else if (bodyA->getCategoryBitmask() == 0x10 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
             Ladder = bodyA;
             normalX *= -1;
             normalY *= -1;
         }
 
-        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x32) {
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x20) {
             chara = bodyA;
             Flag = bodyB;
         }
-        else if (bodyA->getCategoryBitmask() == 0x32 && bodyB->getCategoryBitmask() == 0x01) {
+        else if (bodyA->getCategoryBitmask() == 0x20 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
             Flag = bodyA;
             normalX *= -1;
             normalY *= -1;
         }
 
-        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x64) {
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x40) {
             chara = bodyA;
             Water = bodyB;
         }
-        else if (bodyA->getCategoryBitmask() == 0x64 && bodyB->getCategoryBitmask() == 0x01) {
+        else if (bodyA->getCategoryBitmask() == 0x40 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
             Water = bodyA;
             normalX *= -1;
