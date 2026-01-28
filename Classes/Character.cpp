@@ -1,5 +1,8 @@
 #include "Character.h"
 #include "AudioManager.h"
+#include "GameLayer.h"
+#include "FailedLayer.h"
+#include "UILayer.h"
 
 USING_NS_CC;
 
@@ -363,6 +366,14 @@ void Character::onEnterWater()
             this->runAction(FadeOut::create(0.5f));
 
             AudioManager::playSE(sound_name);
+
+            dynamic_cast<UILayer*>(Director::getInstance()->getRunningScene()->getChildByName("UILayer"))->startPause();
+            AudioManager::pauseBGM();   // ¡‚Ì‚Æ‚±‚ë‚ÍŽ~‚ß‚Ä‚¨‚­iŒã‚©‚ç’²®—\’èj
+            auto scene = Director::getInstance()->getRunningScene();
+            scene->getPhysicsWorld()->setSpeed(0);
+            auto failed = FailedLayer::create();
+            failed->setName("FailedLayer");
+            Director::getInstance()->getRunningScene()->addChild(failed, 5);
         });
 
     auto tag = this->getTag();

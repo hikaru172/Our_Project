@@ -558,3 +558,10 @@ void GameLayer::chara_change() {
 
     AudioManager::playSE("Sounds/click.mp3");
 }
+
+int GameLayer::getStagenumber() {
+    return _stageNumber;
+}
+float GameLayer::getSumtime() {
+    return _sumTime;
+}

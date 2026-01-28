@@ -21,6 +21,9 @@ public:
 
     void setupStage(); // ステージ初期化用
 
+    int getStagenumber();
+    float getSumtime();
+
     float _sumTime = 0.0f; // クリアタイム用
 
     Character* _chara;
