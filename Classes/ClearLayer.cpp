@@ -100,16 +100,47 @@ bool ClearLayer::init(int stageNumber, float sumTime) {
     auto star3_base = Sprite::create("UI/clear_star3_outline.png");
     star3_base->setPosition(size.width / 4.0f * 3.0f, size.height / 10.0f * 9.0f);
     clear->addChild(star3_base);
-
-    //auto star1 = Sprite::create("UI/clear_star1.png");
-    //star1->setPosition(star1_base->getContentSize() / 2.0f);
-    //star1_base->addChild(star1);
-    //auto star2 = Sprite::create("UI/clear_star2.png");
-    //star2->setPosition(star2_base->getContentSize() / 2.0f);
-    //star2_base->addChild(star2);
-    //auto star3 = Sprite::create("UI/clear_star3.png");
-    //star3->setPosition(star3_base->getContentSize() / 2.0f);
-    //star3_base->addChild(star3);
+    // スターのアニメーション
+    auto star1 = Sprite::create("UI/clear_star1.png");
+    star1->setPosition(star1_base->getContentSize() / 2.0f);
+    star1_base->addChild(star1);
+    star1->setScale(0.0f);
+    auto star2 = Sprite::create("UI/clear_star2.png");
+    star2->setPosition(star2_base->getContentSize() / 2.0f);
+    star2_base->addChild(star2);
+    star2->setScale(0.0f);
+    auto star3 = Sprite::create("UI/clear_star3.png");
+    star3->setPosition(star3_base->getContentSize() / 2.0f);
+    star3_base->addChild(star3);
+    star3->setScale(0.0f);
+    auto endCallback1 = CallFunc::create([star1]()
+        {
+            auto rotate1 = RotateBy::create(1.0f, 720);
+            auto scaleUp1 = ScaleTo::create(1.0f, 1.0f);
+            auto spawn1 = Spawn::create(rotate1, scaleUp1, nullptr);
+            star1->runAction(spawn1);
+        });
+    auto endCallback2 = CallFunc::create([star2]()
+        {
+            auto rotate2 = RotateBy::create(1.0f, 720);
+            auto scaleUp2 = ScaleTo::create(1.0f, 1.0f);
+            auto spawn2 = Spawn::create(rotate2, scaleUp2, nullptr);
+            star2->runAction(spawn2);
+        });
+    auto endCallback3 = CallFunc::create([star3]()
+        {
+            auto rotate3 = RotateBy::create(1.0f, 720);
+            auto scaleUp3 = ScaleTo::create(1.0f, 1.0f);
+            auto spawn3 = Spawn::create(rotate3, scaleUp3, nullptr);
+            star3->runAction(spawn3);
+        });
+    // スター表示の条件
+    auto sequence = Sequence::create(endCallback1, nullptr);
+    if (sumTime < 5.0f)
+        sequence = Sequence::create(endCallback1, DelayTime::create(1.0f), endCallback3, nullptr);
+    if (sumTime < 2.0f)
+        sequence = Sequence::create(endCallback1, DelayTime::create(1.0f), endCallback3, DelayTime::create(1.0f), endCallback2, nullptr);
+    this->runAction(sequence);
     
     // ステージ表示
     auto Stage = Label::createWithTTF(StringUtils::format("Stage %d", stageNumber), "fonts/RiiPopkkR.otf", 28);
@@ -124,9 +155,6 @@ bool ClearLayer::init(int stageNumber, float sumTime) {
     auto score = Label::createWithTTF(StringUtils::format("CLEAR TIME : %.2f", sumTime), "fonts/RiiPopkkR.otf", 40);
     score->setPosition(score_back->getContentSize() / 2.0f);
     score_back->addChild(score);
-
-    // 色付きスターをはめ込む動作（スコアによって変化）
-
 
     return true;
 }
