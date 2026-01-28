@@ -28,7 +28,7 @@ bool GoalFlag::init(Vec2 position, std::string sprite_name) {
 
     auto body = PhysicsBody::createBox(Size(12.0f, 12.0f));
     body->setDynamic(false);
-    body->setCategoryBitmask(0x32);
+    body->setCategoryBitmask(0x20);
     body->setCollisionBitmask(0);
     body->setContactTestBitmask(0x01);
     body->setGravityEnable(false);

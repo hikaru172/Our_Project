@@ -31,7 +31,7 @@ bool Character::init(Vec2 position , std::string sprite_name) {
     body->setRotationEnable(false);
     body->setCategoryBitmask(0x01);
     body->setCollisionBitmask(0x02 | 0x04 | 0x08);
-    body->setContactTestBitmask(0x02 | 0x04 | 0x08 | 0x16);
+    body->setContactTestBitmask(0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40);
     body->setVelocityLimit(550.0f);
     this->setPhysicsBody(body);
 

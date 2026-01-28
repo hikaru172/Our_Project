@@ -48,7 +48,7 @@ bool Water::init(Vec2 start_position, Vec2 end_position, std::string sprite_name
     auto material = PhysicsMaterial(1.0f, 0.0f, 0.0f);
     auto body = PhysicsBody::createBox(Size(48.0f * Xamount, 48.0f * Yamount - 24.0f), material, Vec2((Xamount / 2.0f) * 48.0f - 24.0f, (Yamount / 2.0f) * 48.0f - 24.0f));
     body->setDynamic(false);
-    body->setCategoryBitmask(0x64);
+    body->setCategoryBitmask(0x40);
     body->setCollisionBitmask(0x00);
     body->setContactTestBitmask(0x01);
     this->setPhysicsBody(body);
