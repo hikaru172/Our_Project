@@ -9,6 +9,7 @@
 #include "GoalFlag.h"
 #include "Water.h"
 #include "Bridge.h"
+#include "StarCoin.h"
 
 USING_NS_CC;
 using namespace rapidjson;
@@ -121,6 +122,16 @@ void StageLoader::load(const std::string& jsonFile, Node* stageRoot)
 
             auto Bridge = Bridge::create(start, end, image);
             stageRoot->addChild(Bridge);
+        }
+        else if (type == "StarCoin")
+        {
+            Vec2 pos(
+                obj["position"][0].GetFloat(),
+                obj["position"][1].GetFloat()
+            );
+
+            auto star = StarCoin::create(pos, image);
+            stageRoot->addChild(star);
         }
     }
 }
