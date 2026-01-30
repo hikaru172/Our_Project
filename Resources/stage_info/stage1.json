@@ -60,6 +60,12 @@
             "type": "GoalFlag",
             "position": [ 4, 4 ],
             "image": "gimic/flag_yellow.png"
+        },
+        {
+            "type": "Bridge",
+            "start": [ 1, 11 ],
+            "end": [ 10, 11 ],
+            "image": "Platforms/bridge_logs"
         }
     ]
 }
