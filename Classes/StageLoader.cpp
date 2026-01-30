@@ -8,6 +8,7 @@
 #include "Ladder.h"
 #include "GoalFlag.h"
 #include "Water.h"
+#include "Bridge.h"
 
 USING_NS_CC;
 using namespace rapidjson;
@@ -106,6 +107,20 @@ void StageLoader::load(const std::string& jsonFile, Node* stageRoot)
 
             auto flag = GoalFlag::create(pos, image);
             stageRoot->addChild(flag);
+        }
+        else if (type == "Bridge")
+        {
+            Vec2 start(
+                obj["start"][0].GetFloat(),
+                obj["start"][1].GetFloat()
+            );
+            Vec2 end(
+                obj["end"][0].GetFloat(),
+                obj["end"][1].GetFloat()
+            );
+
+            auto Bridge = Bridge::create(start, end, image);
+            stageRoot->addChild(Bridge);
         }
     }
 }

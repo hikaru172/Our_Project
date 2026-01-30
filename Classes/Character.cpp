@@ -30,8 +30,8 @@ bool Character::init(Vec2 position , std::string sprite_name) {
     body->setDynamic(true);
     body->setRotationEnable(false);
     body->setCategoryBitmask(0x01);
-    body->setCollisionBitmask(0x02 | 0x04 | 0x08);
-    body->setContactTestBitmask(0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40);
+    body->setCollisionBitmask(0x02 | 0x04 | 0x08 | 0x80);
+    body->setContactTestBitmask(0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40 | 0x80);
     body->setVelocityLimit(550.0f);
     this->setPhysicsBody(body);
 
@@ -195,6 +195,9 @@ void Character::update(float dt, const CharacterInput& input, const std::vector<
     Vec2 vel = body->getVelocity();
     float speed = 200.0f;
 
+    if (_iswater)
+        return;
+
     if (currentKey.empty()) {
         vel.x = 0;
         if (_state != AnimState::Jump) {
@@ -223,7 +226,7 @@ void Character::update(float dt, const CharacterInput& input, const std::vector<
         x = pos / 48.0f;
         this->setPositionX(48.0f * x + 24.0f);
         vel.x = 0;
-        vel.y = speed;
+        vel.y = speed + 20.0f;
         _state = AnimState::Climb;
     }
     else if ((input.left || input.right) && (_leftlimited || _CBleftlimited || _rightlimited || _CBrightlimited)) { //¶‰E‚Ålimited‚ª‚©‚©‚Á‚Ä‚¢‚é‚Æ‚«‚É‚à_state‚ğWalk‚³‚¹‚é‚æ‚¤‚É‚·‚é‚½‚ß

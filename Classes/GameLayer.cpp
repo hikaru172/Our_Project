@@ -10,6 +10,7 @@
 #include "UILayer.h"
 #include "AudioManager.h"
 #include "Water.h"
+#include "Bridge.h"
 #include <iostream>
 #include <cmath>
 
@@ -49,6 +50,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* Ladder = nullptr;
         PhysicsBody* Flag = nullptr;
         PhysicsBody* Water = nullptr;
+        PhysicsBody* Bridge = nullptr;
 
         // 衝突情報を取得
         auto contactData = contact.getContactData();
@@ -121,6 +123,18 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x80) {
+            chara = bodyA;
+            Bridge = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x80 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Bridge = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
+
         auto vel = chara->getVelocity();
 
         auto tag = chara->getTag();
@@ -157,6 +171,16 @@ bool GameLayer::init(int stageNumber) {
             _chara_dead = true;
             _currentKey.clear();
             return true;
+        }
+
+        if (Bridge) {
+            if (normalY > 0.5f || normalX < -0.6f || normalX > 0.6f) {
+                return false;
+            }
+            else if(normalY < -0.5f) {
+                _chara->onGround();
+                return true;
+            }
         }
 
         if (normalY < -0.5f && chara->getVelocity().y <= 0) { //キャラクターの足と下のオブジェクトが接触
@@ -202,6 +226,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* Ladder = nullptr;
         PhysicsBody* Flag = nullptr;
         PhysicsBody* Water = nullptr;
+        PhysicsBody* Bridge = nullptr;
 
         auto contactData = contact.getContactData();
         float normalX = contactData->normal.x;
@@ -272,6 +297,17 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x80) {
+            chara = bodyA;
+            Bridge = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x80 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Bridge = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
         auto tag = chara->getTag();
         auto charabody = _chara->getPhysicsBody();
         auto otherbody = _other->getPhysicsBody();
@@ -282,6 +318,10 @@ bool GameLayer::init(int stageNumber) {
         }
 
         if (Water) {
+            return true;
+        }
+
+        if (Bridge) {
             return true;
         }
 
@@ -465,7 +505,6 @@ void GameLayer::update(float dt){
     float speed = 200.0f;
 
     _sumTime += dt;
-    /*CCLOG("sumTime : %f", _sumTime);*/
 
     //  GameLayerが機能していないときに、見かけ上の時間を停止させたいが、今のままだとキーボードが起点となってしまっているのが問題
     if (_pause)
