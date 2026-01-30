@@ -432,6 +432,9 @@ void GameLayer::setupStage() {
         _flag.clear();
     }
 
+    AudioManager::stopBGM();
+    AudioManager::playBGM("Sounds/bgm.mp3", true);
+
     _chara1 = Character::create(Vec2(120.0f, 280.0f), "characters/character_green_idle.png");
     _chara2 = Character::create(Vec2(70.0f, 280.0f), "characters/character_beige_idle.png");
     _stageRoot->addChild(_chara1, 1);
@@ -467,9 +470,11 @@ void GameLayer::setupStage() {
 
     _sumTime = 0.0f;
 
-    //ここから下にステージごとのオブジェクト配置処理を追加していく
+    //ステージ情報読み込み
+    std::string stageinfo = "stage_info/stage";
+    stageinfo.append(StringUtils::format("%d.json", _stageNumber));
+    StageLoader::load(stageinfo, _stageRoot);
 
-    StageLoader::load("stage_info/stage1.json", _stageRoot);
     for (auto child : _stageRoot->getChildren())
     {
         //dynamic_castは、この場合、childがBlockクラスかその派生クラスだったら Block*型に変換し、違ったらnullptrという
