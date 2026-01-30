@@ -46,7 +46,6 @@ bool Platform::init(Vec2 start_position, Vec2 end_position, std::string sprite_n
 
             sprite_name.append(".png");
 
-            CCLOG("%s", sprite_name.c_str());
             auto sprite = Sprite::create(sprite_name);
             sprite->setPosition(Vec2(48.0f * i, 48.0f * j));
             this->addChild(sprite);

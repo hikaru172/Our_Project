@@ -264,7 +264,7 @@ void Character::update(float dt, const CharacterInput& input, const std::vector<
 
 void Character::onGround() {
     _jumplimited = false;
-    if (_state == AnimState::Jump) {
+    if (_state == AnimState::Jump || _state == AnimState::Climb) {
         _state = AnimState::Idle;
     }
 }
