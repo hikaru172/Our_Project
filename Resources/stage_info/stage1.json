@@ -66,6 +66,11 @@
             "start": [ 1, 11 ],
             "end": [ 10, 11 ],
             "image": "Platforms/bridge_logs"
+        },
+        {
+            "type": "StarCoin",
+            "position": [ 3, 6 ],
+            "image": "gimic/star.png"
         }
     ]
 }

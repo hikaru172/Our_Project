@@ -10,7 +10,7 @@ public:
 
     virtual bool init(cocos2d::Vec2, std::string);
 
-    void getFlag(int, cocos2d::Node*, int, float);
+    void getFlag(int, cocos2d::Node*);
 
 };
 

@@ -5,8 +5,6 @@
 #include "Character.h"
 #include "Switch.h"
 #include "Block.h"
-#include "Ladder.h"
-#include "GoalFlag.h"
 
 class GameLayer : public cocos2d::Layer {
 public:
@@ -33,8 +31,6 @@ public:
 
     std::vector<Switch*> _switch;
     std::vector<Block*> _block;
-    std::vector<Ladder*> _ladder;
-    std::vector<GoalFlag*> _flag;
 
     std::vector<kind_of> _on_switch_kind;
 

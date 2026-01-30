@@ -11,6 +11,7 @@
 #include "AudioManager.h"
 #include "Water.h"
 #include "Bridge.h"
+#include "StarCoin.h"
 #include <iostream>
 #include <cmath>
 
@@ -51,6 +52,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* Flag = nullptr;
         PhysicsBody* Water = nullptr;
         PhysicsBody* Bridge = nullptr;
+        PhysicsBody* Star = nullptr;
 
         // 衝突情報を取得
         auto contactData = contact.getContactData();
@@ -134,6 +136,16 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x100) {
+            chara = bodyA;
+            Star = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x100 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Star = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
 
         auto vel = chara->getVelocity();
 
@@ -157,7 +169,7 @@ bool GameLayer::init(int stageNumber) {
         if (Flag) {
             //getNode()はNode*型で返ってくるためキャスト
             auto flag = dynamic_cast<GoalFlag*>(Flag->getNode());
-            flag->getFlag(tag, _stageRoot, _stageNumber, _sumTime);
+            flag->getFlag(tag, _stageRoot);
             return true;
         }
 
@@ -181,6 +193,12 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onGround();
                 return true;
             }
+        }
+
+        if (Star) {
+            auto star = dynamic_cast<StarCoin*>(Star->getNode());
+            star->getStar();
+            return true;
         }
 
         if (normalY < -0.5f && chara->getVelocity().y <= 0) { //キャラクターの足と下のオブジェクトが接触
@@ -227,6 +245,7 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* Flag = nullptr;
         PhysicsBody* Water = nullptr;
         PhysicsBody* Bridge = nullptr;
+        PhysicsBody* Star = nullptr;
 
         auto contactData = contact.getContactData();
         float normalX = contactData->normal.x;
@@ -304,6 +323,17 @@ bool GameLayer::init(int stageNumber) {
         else if (bodyA->getCategoryBitmask() == 0x80 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
             Bridge = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x100) {
+            chara = bodyA;
+            Star = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x100 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Star = bodyA;
             normalX *= -1;
             normalY *= -1;
         }
@@ -428,8 +458,6 @@ void GameLayer::setupStage() {
         _stageRoot->removeAllChildrenWithCleanup(true);
         _switch.clear();
         _block.clear();
-        _ladder.clear();
-        _flag.clear();
     }
 
     _chara1 = Character::create(Vec2(120.0f, 280.0f), "characters/character_green_idle.png");
@@ -478,10 +506,6 @@ void GameLayer::setupStage() {
             _block.push_back(bl);
         else if (auto sw = dynamic_cast<Switch*>(child))
             _switch.push_back(sw);
-        else if (auto la = dynamic_cast<Ladder*>(child))
-            _ladder.push_back(la);
-        else if (auto fl = dynamic_cast<GoalFlag*>(child))
-            _flag.push_back(fl);
     }
 
 }
