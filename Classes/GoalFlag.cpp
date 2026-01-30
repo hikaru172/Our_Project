@@ -62,7 +62,7 @@ void GoalFlag::getFlag(int charatag, cocos2d::Node* stageRoot, int stageNumber, 
         auto scene = Director::getInstance()->getRunningScene();
         scene->getPhysicsWorld()->setSpeed(0);
         // ClearLayer‚ðScene‚É’Ç‰Á
-        auto clearLayer = ClearLayer::createLayer(stageNumber, sumTime);
+        auto clearLayer = ClearLayer::create();
         clearLayer->setName("ClearLayer");
 
         Director::getInstance()->getRunningScene()->addChild(clearLayer, 5);

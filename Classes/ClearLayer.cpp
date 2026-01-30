@@ -7,21 +7,13 @@
 
 USING_NS_CC;
 
-ClearLayer* ClearLayer::createLayer(int stageNumber, float sumTime) {
-    ClearLayer* ret = new ClearLayer();
-    if (ret && ret->init(stageNumber, sumTime)) {
-        ret->autorelease();
-        return ret;
-    }
-    CC_SAFE_DELETE(ret);
-
-    return nullptr;
-}
-
-bool ClearLayer::init(int stageNumber, float sumTime) {
+bool ClearLayer::init() {
     if (!Layer::init()
         )
         return false;
+
+    _StageNumber = dynamic_cast<GameLayer*>(Director::getInstance()->getRunningScene()->getChildByName("GameLayer"))->getStagenumber();
+    float sumTime = dynamic_cast<GameLayer*>(Director::getInstance()->getRunningScene()->getChildByName("GameLayer"))->getSumtime();
 
     //PauseLayer内で全てのタッチ入力を検知することで、Pause中は他のUIに触れないように
     auto listener = EventListenerTouchOneByOne::create();
@@ -35,6 +27,12 @@ bool ClearLayer::init(int stageNumber, float sumTime) {
 
     auto bg = LayerColor::create(Color4B(0, 0, 0, 128));
     this->addChild(bg);
+
+    // ポップアップ
+    auto popup = Label::createWithTTF("CLEAR!", "fonts/RiiPopkkR.otf", 128);
+    popup->setPosition(Director::getInstance()->getVisibleSize() / 2.0f);
+    this->addChild(popup);
+    popup->setScale(0.0f);
 
     // 背景
     auto clear = Sprite::create("UI/clear_back.png");
@@ -100,6 +98,9 @@ bool ClearLayer::init(int stageNumber, float sumTime) {
     auto star3_base = Sprite::create("UI/clear_star3_outline.png");
     star3_base->setPosition(size.width / 4.0f * 3.0f, size.height / 10.0f * 9.0f);
     clear->addChild(star3_base);
+
+    clear->setScale(0.0f);
+
     // スターのアニメーション
     auto star1 = Sprite::create("UI/clear_star1.png");
     star1->setPosition(star1_base->getContentSize() / 2.0f);
@@ -113,6 +114,16 @@ bool ClearLayer::init(int stageNumber, float sumTime) {
     star3->setPosition(star3_base->getContentSize() / 2.0f);
     star3_base->addChild(star3);
     star3->setScale(0.0f);
+    auto popAnim = CallFunc::create([popup]()
+        {
+            auto popAnim = Sequence::create(ScaleTo::create(0.5f, 1.0f), DelayTime::create(0.5f), FadeOut::create(0.5f), nullptr);
+            popup->runAction(popAnim);
+        });
+    auto clearAnim = CallFunc::create([clear]()
+        {
+            auto clearAnim = Spawn::create(ScaleTo::create(0.5f, 1.0f), nullptr);
+            clear->runAction(clearAnim);
+        });
     auto endCallback1 = CallFunc::create([star1]()
         {
             auto rotate1 = RotateBy::create(1.0f, 720);
@@ -134,19 +145,22 @@ bool ClearLayer::init(int stageNumber, float sumTime) {
             auto spawn3 = Spawn::create(rotate3, scaleUp3, nullptr);
             star3->runAction(spawn3);
         });
+    // ポップアップ->クリア画面出現
+    auto sequencePop = Sequence::create(popAnim, DelayTime::create(1.5f), clearAnim, nullptr);
     // スター表示の条件
-    auto sequence = Sequence::create(endCallback1, nullptr);
+    auto sequenceStar = Sequence::create(endCallback1, nullptr);
     if (sumTime < 5.0f)
-        sequence = Sequence::create(endCallback1, DelayTime::create(1.0f), endCallback3, nullptr);
+        sequenceStar = Sequence::create(endCallback1, DelayTime::create(1.0f), endCallback3, nullptr);
     if (sumTime < 2.0f)
-        sequence = Sequence::create(endCallback1, DelayTime::create(1.0f), endCallback3, DelayTime::create(1.0f), endCallback2, nullptr);
+        sequenceStar = Sequence::create(endCallback1, DelayTime::create(1.0f), endCallback3, DelayTime::create(1.0f), endCallback2, nullptr);
+
+    auto sequence = Sequence::create(sequencePop, DelayTime::create(0.5f), sequenceStar, nullptr);
     this->runAction(sequence);
     
     // ステージ表示
-    auto Stage = Label::createWithTTF(StringUtils::format("Stage %d", stageNumber), "fonts/RiiPopkkR.otf", 28);
+    auto Stage = Label::createWithTTF(StringUtils::format("Stage %d", _StageNumber), "fonts/RiiPopkkR.otf", 28);
     Stage->setPosition(size.width / 2.0f, size.height / 10.0f * 7.0f);
     clear->addChild(Stage);
-    _StageNumber = stageNumber;
     
     // スコア表示（タイムか何か）
     auto score_back = Sprite::create("UI/clear_score_back.png");
