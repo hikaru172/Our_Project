@@ -7,9 +7,9 @@ class ClearLayer : public cocos2d::Layer
 {
 public:
 
-	static ClearLayer* createLayer(int, float);
+	CREATE_FUNC(ClearLayer);
 	
-	virtual bool init(int, float);
+	virtual bool init();
 
 	int _StageNumber = 0;
 

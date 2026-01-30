@@ -27,6 +27,12 @@ bool FailedLayer::init() {
     auto bg = LayerColor::create(Color4B(0, 0, 0, 128));
     this->addChild(bg);
 
+    // ポップアップ
+    auto popup = Label::createWithTTF("FAILED...", "fonts/RiiPopkkR.otf", 128);
+    popup->setPosition(Director::getInstance()->getVisibleSize() / 2.0f);
+    this->addChild(popup);
+    popup->setScale(0.0f);
+
     // 背景
     auto failed = Sprite::create("UI/failed_back.png");
     failed->setPosition(Director::getInstance()->getVisibleSize() / 2.0f);
@@ -81,6 +87,31 @@ bool FailedLayer::init() {
     auto score = Label::createWithTTF(StringUtils::format("DEAD TIME : %.2f", time), "fonts/RiiPopkkR.otf", 40);
     score->setPosition(score_back->getContentSize() / 2.0f);
     score_back->addChild(score);
+
+    // キャラ表示
+    auto chara1 = Sprite::create("characters/character_green_dead.png");
+    auto chara2 = Sprite::create("characters/character_beige_dead.png");
+    chara1->setPosition(size.width / 3.0f * 2.0f, size.height);
+    chara2->setPosition(size.width / 3.0f, size.height);
+    failed->addChild(chara1);
+    failed->addChild(chara2);
+
+    // 最初は表示しないように
+    failed->setScale(0.0f);
+
+    // アニメーション
+    auto popAnim = CallFunc::create([popup]()
+        {
+            auto popAnim = Sequence::create(ScaleTo::create(0.5f, 1.0f), DelayTime::create(0.5f), FadeOut::create(0.5f), nullptr);
+            popup->runAction(popAnim);
+        });
+    auto failedAnim = CallFunc::create([failed]()
+        {
+            auto failedAnim = Spawn::create(ScaleTo::create(0.5f, 1.0f), nullptr);
+            failed->runAction(failedAnim);
+        });
+    auto sequencePop = Sequence::create(popAnim, DelayTime::create(1.5f), failedAnim, nullptr);
+    this->runAction(sequencePop);
 
     return true;
 }
