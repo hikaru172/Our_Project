@@ -163,6 +163,20 @@ bool GameLayer::init(int stageNumber) {
                 else 
                     _chara2switchPressed = true;
             }
+            else if (Water) {
+                _other->onEnterWater();
+                _chara_dead = true;
+                _currentKey.clear();
+            }
+            else if (Flag) {
+                auto flag = dynamic_cast<GoalFlag*>(Flag->getNode());
+                flag->getFlag(tag, _stageRoot);
+            }
+            else if (Star) {
+                auto star = dynamic_cast<StarCoin*>(Star->getNode());
+                star->getStar();
+                _isStar = true;
+            }
             return true;
         }
 
@@ -198,6 +212,7 @@ bool GameLayer::init(int stageNumber) {
         if (Star) {
             auto star = dynamic_cast<StarCoin*>(Star->getNode());
             star->getStar();
+            _isStar = true;
             return true;
         }
 
@@ -443,6 +458,7 @@ bool GameLayer::init(int stageNumber) {
 
     _stageRoot = Node::create();
     _stageRoot->setPosition(Vec2::ZERO);
+    _stageRoot->setName("root");
     this->addChild(_stageRoot);
 
     // ステージ初期化処理
@@ -497,6 +513,7 @@ void GameLayer::setupStage() {
     _chara2switchPressed = false;
 
     _sumTime = 0.0f;
+    _isStar = false;
 
     //ステージ情報読み込み
     std::string stageinfo = "stage_info/stage";
@@ -519,14 +536,13 @@ void GameLayer::setupStage() {
 
 void GameLayer::update(float dt){
 
-    CharacterInput input;
-    input.left = _leftPressed;
-    input.right = _rightPressed;
-    input.jump = _jumpPressed;
-    input.up = _upPressed;
-    input.down = _downPressed;
+    _input.left = _leftPressed;
+    _input.right = _rightPressed;
+    _input.jump = _jumpPressed;
+    _input.up = _upPressed;
+    _input.down = _downPressed;
 
-    _chara->update(dt, input, _currentKey);
+    _chara->update(_input, _currentKey);
     _jumpPressed = false;
 
     float screenHalf = Director::getInstance()->getVisibleSize().width * 0.5f;
@@ -587,6 +603,11 @@ void GameLayer::update(float dt){
 
 void GameLayer::chara_change() {
     auto now_chara_num = _chara->getTag();
+    _currentKey.clear();
+    _chara->update(_input, _currentKey);
+    _chara->setIdle();
+    _chara->changeAnimation(AnimState::Idle);
+    _chara->onGround();
 
     if (now_chara_num == 1) {
         _chara1 = _chara;
@@ -632,4 +653,8 @@ int GameLayer::getStagenumber() {
 }
 float GameLayer::getSumtime() {
     return _sumTime;
+}
+
+bool GameLayer::getStar() {
+    return _isStar;
 }

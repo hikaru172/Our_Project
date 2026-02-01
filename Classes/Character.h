@@ -30,7 +30,7 @@ public:
     virtual bool init(cocos2d::Vec2, std::string);
 
 
-    void update(float, const CharacterInput&, const std::vector<EventKeyboard::KeyCode>&);
+    void update(const CharacterInput&, const std::vector<EventKeyboard::KeyCode>&);
 
     void onGround();
     void onHitLeft();
@@ -58,6 +58,9 @@ public:
     void removeTriangle();
 
     bool iswater();
+    void setIdle();
+
+    void changeAnimation(AnimState state);
 
 private:
 
@@ -77,7 +80,6 @@ private:
 
     void initAnimations1();
     void initAnimations2();
-    void changeAnimation(AnimState state);
 
     bool _leftlimited = false;
     bool _rightlimited = false;

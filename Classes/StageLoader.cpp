@@ -135,3 +135,18 @@ void StageLoader::load(const std::string& jsonFile, Node* stageRoot)
         }
     }
 }
+
+float StageLoader::timeload(const std::string& jsonFile) {
+    std::string jsonStr = FileUtils::getInstance()->getStringFromFile(jsonFile);
+
+    Document doc; //docは親子関係の一番上にあるrootノード
+    doc.Parse(jsonStr.c_str()); //メモリ上にノードを生成し、親子関係を構築
+
+    float clearTime = 0.0f;
+
+    if (doc.HasMember("clear_time") && doc["clear_time"].IsNumber())
+    {
+        clearTime = doc["clear_time"].GetFloat();
+    }
+    return clearTime;
+}

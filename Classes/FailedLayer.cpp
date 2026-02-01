@@ -53,7 +53,7 @@ bool FailedLayer::init() {
         repeat_selected_button,
         CC_CALLBACK_1(FailedLayer::onRepeatButtonPressed, this)
     );
-    repeat_Item->setPosition(size.width / 5.0f, size.height / 12.0f);
+    repeat_Item->setPosition(size.width / 5.0f * 3.5, size.height / 12.0f);
     repeat_Item->addChild(repeat);
 
 
@@ -67,7 +67,7 @@ bool FailedLayer::init() {
         stage_selected_button,
         CC_CALLBACK_1(FailedLayer::onStageButtonPressed, this)
     );
-    stage_Item->setPosition(size.width / 5.0f * 4.0f, size.height / 12.0f);
+    stage_Item->setPosition(size.width / 5.0f * 1.5, size.height / 12.0f);
     stage_Item->addChild(stage);
 
     // ボタン配置

@@ -4,12 +4,13 @@
 #include "GameLayer.h"
 #include "GameScene.h"
 #include "StageSelectScene.h"
+#include "StageLoader.h"
+#include "StarCoin.h"
 
 USING_NS_CC;
 
 bool ClearLayer::init() {
-    if (!Layer::init()
-        )
+    if (!Layer::init())
         return false;
 
     _StageNumber = dynamic_cast<GameLayer*>(Director::getInstance()->getRunningScene()->getChildByName("GameLayer"))->getStagenumber();
@@ -54,7 +55,7 @@ bool ClearLayer::init() {
         repeat_selected_button,
         CC_CALLBACK_1(ClearLayer::onRepeatButtonPressed, this)
     );
-    repeat_Item->setPosition(size.width / 5.0f, size.height / 12.0f);
+    repeat_Item->setPosition(size.width / 2.0f, size.height / 12.0f);
     repeat_Item->addChild(repeat);
 
     // 次のステージへボタン
@@ -67,7 +68,7 @@ bool ClearLayer::init() {
         next_selected_button,
         CC_CALLBACK_1(ClearLayer::onNextButtonPressed, this)
     );
-    next_Item->setPosition(size.width / 2.0f, size.height / 12.0f);
+    next_Item->setPosition(size.width / 5.0f * 4.0f, size.height / 12.0f);
     next_Item->addChild(next);
 
     // ステージ選択へボタン
@@ -80,7 +81,7 @@ bool ClearLayer::init() {
         stage_selected_button,
         CC_CALLBACK_1(ClearLayer::onStageButtonPressed, this)
     );
-    stage_Item->setPosition(size.width / 5.0f * 4.0f, size.height / 12.0f);
+    stage_Item->setPosition(size.width / 5.0f, size.height / 12.0f);
     stage_Item->addChild(stage);
 
     // ボタン配置
@@ -147,11 +148,25 @@ bool ClearLayer::init() {
         });
     // ポップアップ->クリア画面出現
     auto sequencePop = Sequence::create(popAnim, DelayTime::create(1.5f), clearAnim, nullptr);
+
     // スター表示の条件
+    std::string stageinfo = "stage_info/stage";
+    stageinfo.append(StringUtils::format("%d.json", _StageNumber));
+    float clear_time = StageLoader::timeload(stageinfo);
+    int star_count = 1;
+
+    auto scene = Director::getInstance()->getRunningScene();
+    auto isstar = dynamic_cast<GameLayer*>(scene->getChildByName("GameLayer"))->getStar();
+
+    if (sumTime <= clear_time)
+        star_count++;
+    if (isstar)
+        star_count++;
+
     auto sequenceStar = Sequence::create(endCallback1, nullptr);
-    if (sumTime < 5.0f)
+    if (star_count == 2)
         sequenceStar = Sequence::create(endCallback1, DelayTime::create(1.0f), endCallback3, nullptr);
-    if (sumTime < 2.0f)
+    if (star_count == 3)
         sequenceStar = Sequence::create(endCallback1, DelayTime::create(1.0f), endCallback3, DelayTime::create(1.0f), endCallback2, nullptr);
 
     auto sequence = Sequence::create(sequencePop, DelayTime::create(0.5f), sequenceStar, nullptr);
