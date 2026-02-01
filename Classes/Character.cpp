@@ -189,7 +189,7 @@ void Character::changeAnimation(AnimState state) {
 }
 
 
-void Character::update(float dt, const CharacterInput& input, const std::vector<EventKeyboard::KeyCode>& currentKey) {
+void Character::update(const CharacterInput& input, const std::vector<EventKeyboard::KeyCode>& currentKey) {
 
     auto body = this->getPhysicsBody();
     Vec2 vel = body->getVelocity();
@@ -252,7 +252,6 @@ void Character::update(float dt, const CharacterInput& input, const std::vector<
         _state = AnimState::Jump;
     }
 
-    /*CCLOG("vel.x %f", vel.x);*/
     body->setVelocity(vel);
 
     if (_state != _prevState) {
@@ -392,6 +391,10 @@ void Character::onEnterWater()
 
 bool Character::iswater() {
     return _iswater;
+}
+
+void Character::setIdle() {
+    _state = AnimState::Idle;
 }
 
 Character::~Character() {

@@ -40,12 +40,5 @@ bool StarCoin::init(Vec2 position, std::string sprite_name) {
 }
 
 void StarCoin::getStar() {
-    _holdStar = true;
-    CCLOG("holdstar : %d", _holdStar);
-
     this->removeFromParent();
-}
-
-bool StarCoin::getHold() {
-    return _holdStar;
 }

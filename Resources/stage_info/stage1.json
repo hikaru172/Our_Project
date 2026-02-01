@@ -72,5 +72,6 @@
             "position": [ 3, 6 ],
             "image": "gimic/star.png"
         }
-    ]
+    ],
+    "clear_time" : 10.0
 }
