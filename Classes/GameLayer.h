@@ -21,6 +21,7 @@ public:
 
     int getStagenumber();
     float getSumtime();
+    bool getStar();
 
     float _sumTime = 0.0f; // クリアタイム用
 
@@ -37,6 +38,7 @@ public:
     Node* _stageRoot;
 
     std::vector<EventKeyboard::KeyCode> _currentKey;
+    CharacterInput _input;
 
 private:
 
@@ -67,6 +69,8 @@ private:
     float _total = 0.0f;
     float _total1 = 0.0f;
     float _total2 = 0.0f;
+
+    bool _isStar = false;
 };
 
 #endif //__GAME_LAYER_H__
