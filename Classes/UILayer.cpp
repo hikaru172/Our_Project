@@ -35,8 +35,8 @@ bool UILayer::init(int stageNumber) {
 
 
 
-    auto normal_Sprite = Sprite::create("UI/stageselect.png");
-    auto selected_Sprite = Sprite::create("UI/stageselect2.png");
+    auto normal_Sprite = Sprite::create("UI/chara_change.png");
+    auto selected_Sprite = Sprite::create("UI/chara_change2.png");
 
     //この内部ではSpriteをMenuItemSpriteの子ノードとして追加している
     auto chara_change_Item = MenuItemSprite::create(
@@ -44,7 +44,7 @@ bool UILayer::init(int stageNumber) {
         selected_Sprite,
         CC_CALLBACK_1(UILayer::onButtonPressed, this)
     );
-    chara_change_Item->setPosition(Vec2(1200.0f, 670.0f));
+    chara_change_Item->setPosition(Vec2(1160.0f, 670.0f));
 
 
     auto repeat_Sprite = Sprite::create("UI/repeat.png");
