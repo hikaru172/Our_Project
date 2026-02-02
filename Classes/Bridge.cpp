@@ -47,11 +47,11 @@ bool Bridge::init(Vec2 start_position, Vec2 end_position, std::string sprite_nam
         sprite_name = tmp;
     }
 
-    auto Position = Vec2(24.0f + 48.0f * start_position.x, 48.0f * start_position.y);
+    auto Position = Vec2(24.0f + 48.0f * start_position.x, 48.0f * start_position.y + 33.0f);
     this->setPosition(Position);
 
     auto material = PhysicsMaterial(1.0f, 0.0f, 0.0f);
-    auto body = PhysicsBody::createBox(Size(48.0f * (Xamount - 2.0f) + 10.0f, 34.0f), material, Vec2(( (Xamount - 2.0f) / 2.0f) * 48.0f - 24.0f , 0.0f));
+    auto body = PhysicsBody::createBox(Size(48.0f * (Xamount - 2.0f) + 10.0f, 34.0f), material, Vec2(( (Xamount - 2.0f) / 2.0f) * 48.0f - 24.0f , -2.0f));
     body->setCategoryBitmask(0x80);
     body->setCollisionBitmask(0x01);
     body->setContactTestBitmask(0x01);

@@ -369,8 +369,8 @@ bool GameLayer::init(int stageNumber) {
 
         auto vel = chara->getVelocity();
 
-        if (normalY < -0.5f && vel.y > 10.0f) {
-            if (!Flag) {
+        if (normalY < -0.5f) {
+            if (!Flag && vel.y > 10.0f) {
                 _chara->onReleaseGround();
             }
 
