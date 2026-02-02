@@ -150,3 +150,18 @@ float StageLoader::timeload(const std::string& jsonFile) {
     }
     return clearTime;
 }
+
+float StageLoader::endload(const std::string& jsonFile) {
+    std::string jsonStr = FileUtils::getInstance()->getStringFromFile(jsonFile);
+
+    Document doc;
+    doc.Parse(jsonStr.c_str());
+
+    float endpoint = 0.0f;
+
+    if (doc.HasMember("end_point") && doc["end_point"].IsNumber())
+    {
+        endpoint = doc["end_point"].GetFloat();
+    }
+    return endpoint;
+}

@@ -519,6 +519,8 @@ void GameLayer::setupStage() {
     std::string stageinfo = "stage_info/stage";
     stageinfo.append(StringUtils::format("%d.json", _stageNumber));
     StageLoader::load(stageinfo, _stageRoot);
+    _end_point = StageLoader::endload(stageinfo);
+    _end_point = (_end_point + 1) * 48.0f;
 
     for (auto child : _stageRoot->getChildren())
     {
@@ -555,10 +557,16 @@ void GameLayer::update(float dt){
     if (_pause)
         _sumTime -= dt;
 
-    if (_total * speed > 0.0f) {
+    //auto diff = _end_point - Director::getInstance()->getVisibleSize().width;
+
+    if (_total * speed >= 0.0f) {
         _total = 0.0f;
         this->setPositionX(0.0f);
     }
+    //else if (_total * speed < -diff) {
+    //    _total = -diff / speed;
+    //    this->setPositionX(-diff);
+    //}
     else {
         this->setPositionX(_total * speed);
     }
@@ -587,23 +595,25 @@ void GameLayer::update(float dt){
         }
     }
 
-    if (charaX > screenHalf) {
+    float layer_right = Director::getInstance()->getVisibleSize().width - this->getPositionX();
+
+    if (charaX > screenHalf && _end_point != 0.0) {
         if (_currentKey.empty()) {
             return;
         }
         else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_LEFT_ARROW && _chara->canMoveLeft()) {
             _total += dt;
         }
-        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_RIGHT_ARROW && _chara->canMoveRight()) {
+        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_RIGHT_ARROW && _chara->canMoveRight() && layer_right < _end_point) {
             _total -= dt;
         }
         else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_UP_ARROW && _input.left && _chara->canMoveLeft()) {
             _total += dt;
         }
-        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_UP_ARROW && _input.right && _chara->canMoveRight()) {
+        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_UP_ARROW && _input.right && _chara->canMoveRight() && layer_right < _end_point) {
             _total -= dt;
         }
-    }
+    } 
 }
 
 
