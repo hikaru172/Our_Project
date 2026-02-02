@@ -29,18 +29,22 @@ bool TitleScene::init()
     //originは見えている画面領域の左下座標(cocos2d::Vec2型←ポインタじゃない！)
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    //スタートボタン
-    auto startItem = MenuItemLabel::create(
-        Label::createWithTTF("START", "fonts/RiiPopkkR.otf", 50),
-        CC_CALLBACK_1(TitleScene::onStartButtonPressed, this));
+    auto bg = Sprite::create("BG/title_back.png");
+    bg->setPosition(visibleSize / 2.0f);
+    this->addChild(bg, 0);
 
+    //スタートボタン
+    auto start_label = Label::createWithTTF("START", "fonts/nikumaru.otf", 50);
+    start_label->setTextColor(Color4B(60, 60, 60, 255));
+    auto startItem = MenuItemLabel::create(
+        start_label,
+        CC_CALLBACK_1(TitleScene::onStartButtonPressed, this));
 
     if (startItem == nullptr) {
         problemLoading("'fonts/RiiPopkkR.otf'");
     }
     else {
-        startItem->setPosition(Vec2(origin.x + visibleSize.width / 2, //setposition(Vec2(x,y))
-            origin.y + visibleSize.height * 0.4f));
+        startItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.2f));
     }
 
     auto menu = Menu::create(startItem, nullptr); //引数が可変長のため、終端マーカーとしてnullptrを書く
@@ -50,15 +54,15 @@ bool TitleScene::init()
 
 
     // ラベル表示
-    auto label = Label::createWithTTF("Line Shooter", "fonts/RiiPopkkR.otf", 24);
+    auto label = Label::createWithTTF("FLIPAIRS", "fonts/nikumaru.otf", 96);
+    label->setTextColor(Color4B(0, 0, 0, 255));
     if (label == nullptr) {
         //読み込み失敗時のエラー処理
         problemLoading("'fonts/RiiPopkkR.otf'");
     }
     else {
         // 配置
-        label->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + visibleSize.height - label->getContentSize().height));
+        label->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.6f));
 
         // add the label as a child to this layer
         this->addChild(label, 1);

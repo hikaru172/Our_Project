@@ -28,7 +28,8 @@ bool FailedLayer::init() {
     this->addChild(bg);
 
     // ポップアップ
-    auto popup = Label::createWithTTF("FAILED...", "fonts/RiiPopkkR.otf", 128);
+    auto popup = Label::createWithTTF("FAILED...", "fonts/nikumaru.otf", 128);
+    popup->setTextColor(Color4B(60, 60, 60, 255));
     popup->setPosition(Director::getInstance()->getVisibleSize() / 2.0f);
     this->addChild(popup);
     popup->setScale(0.0f);

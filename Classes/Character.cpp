@@ -230,7 +230,7 @@ void Character::update(const CharacterInput& input, const std::vector<EventKeybo
         x = pos / 48.0f;
         this->setPositionX(48.0f * x + 24.0f);
         vel.x = 0;
-        vel.y = speed + 20.0f;
+        vel.y = speed;
         _state = AnimState::Climb;
     }
     else if ((input.left || input.right) && (_leftlimited || _CBleftlimited || _rightlimited || _CBrightlimited)) { //¶‰E‚Ålimited‚ª‚©‚©‚Á‚Ä‚¢‚é‚Æ‚«‚É‚à_state‚ğWalk‚³‚¹‚é‚æ‚¤‚É‚·‚é‚½‚ß
