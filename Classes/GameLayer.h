@@ -71,6 +71,8 @@ private:
     float _total2 = 0.0f;
 
     bool _isStar = false;
+
+    float _end_point = 0.0f;
 };
 
 #endif //__GAME_LAYER_H__

@@ -171,6 +171,8 @@ bool ClearLayer::init() {
 
     auto sequence = Sequence::create(sequencePop, DelayTime::create(0.5f), sequenceStar, nullptr);
     this->runAction(sequence);
+
+    AudioManager::playSE("Sounds/clear.mp3");
     
     // ステージ表示
     auto Stage = Label::createWithTTF(StringUtils::format("Stage %d", _StageNumber), "fonts/RiiPopkkR.otf", 28);

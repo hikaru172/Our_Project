@@ -26,7 +26,7 @@
     },
     {
       "type": "Bridge",
-      "start": [ 5, 9 ],
+      "start": [ 0, 9 ],
       "end": [ 9, 9 ],
       "image": "Platforms/bridge_logs"
     },
@@ -48,18 +48,18 @@
     },
     {
       "type": "Block",
-      "start": [ 12, 7 ],
-      "end": [ 14, 7 ],
+      "start": [ 11, 7 ],
+      "end": [ 15, 7 ],
       "image": "Blocks/block_trans_red.png"
     },
     {
       "type": "GoalFlag",
-      "position": [ 13, 9 ],
+      "position": [ 13, 8 ],
       "image": "gimic/flag_green.png"
     },
     {
       "type": "GoalFlag",
-      "position": [ 13, 13 ],
+      "position": [ 13, 12 ],
       "image": "gimic/flag_yellow.png"
     },
     {

@@ -73,5 +73,6 @@
             "image": "gimic/star.png"
         }
     ],
-    "clear_time" : 10.0
+    "clear_time": 10.0,
+    "end_point" : 0.0
 }
