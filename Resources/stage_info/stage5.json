@@ -1,0 +1,72 @@
+{
+  "objects": [
+    {
+      "type": "Water",
+      "start": [ 9, 0 ],
+      "end": [ 17, 1 ],
+      "image": "Water/Water"
+    },
+    {
+      "type": "Platform",
+      "start": [ 0, 0 ],
+      "end": [ 9, 3 ],
+      "image": "Platforms/terrain_grass_block"
+    },
+    {
+      "type": "Platform",
+      "start": [ 17, 0 ],
+      "end": [ 50, 3 ],
+      "image": "Platforms/terrain_grass_block"
+    },
+    {
+      "type": "Ladder",
+      "start": [ 7, 4 ],
+      "end": [ 7, 9 ],
+      "image": "ladder/ladder"
+    },
+    {
+      "type": "Bridge",
+      "start": [ 0, 9 ],
+      "end": [ 9, 9 ],
+      "image": "Platforms/bridge_logs"
+    },
+    {
+      "type": "Switch",
+      "position": [ 5, 10 ],
+      "image": "gimic/switch_blue.png"
+    },
+    {
+      "type": "Block",
+      "start": [ 11, 11 ],
+      "end": [ 15, 11 ],
+      "image": "Blocks/block_trans_blue.png"
+    },
+    {
+      "type": "Switch",
+      "position": [ 17, 4 ],
+      "image": "gimic/switch_red.png"
+    },
+    {
+      "type": "Block",
+      "start": [ 11, 7 ],
+      "end": [ 15, 7 ],
+      "image": "Blocks/block_trans_red.png"
+    },
+    {
+      "type": "GoalFlag",
+      "position": [ 13, 8 ],
+      "image": "gimic/flag_green.png"
+    },
+    {
+      "type": "GoalFlag",
+      "position": [ 13, 12 ],
+      "image": "gimic/flag_yellow.png"
+    },
+    {
+      "type": "StarCoin",
+      "position": [ 20, 6 ],
+      "image": "gimic/star.png"
+    }
+  ],
+  "clear_time": 30.0
+}

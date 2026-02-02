@@ -3,12 +3,11 @@
 USING_NS_CC;
 
 int AudioManager::_bgmId = AudioEngine::INVALID_AUDIO_ID; 
-float AudioManager::_bgmVolume = 0.2f;
+float AudioManager::_bgmVolume = 0.5f;
+float AudioManager::_seVolume = 0.5f;
 
 void AudioManager::playBGM(const std::string& file, bool loop)
 {
-
-    AudioEngine::lazyInit();
 
     //stopやplay2dなどのメソッドを呼ぶとき、この条件を用いることで安全に管理している
     if (_bgmId != AudioEngine::INVALID_AUDIO_ID)
@@ -56,7 +55,18 @@ float AudioManager::getBGMVolume()
 }
 
 //SEはBGMや他SEと音が重なる可能性があるため、_bgmId!= AudioEngine::INVALID_AUDIO_ID のチェックはしていない
-//もしサウンドによって必要になった時は、_seIdをメンバ変数として用意して同様に実装する
-void AudioManager::playSE(const std::string& file, float volume){
-    AudioEngine::play2d(file, false, volume);
+void AudioManager::playSE(const std::string& file){
+    AudioEngine::play2d(file, false, _seVolume);
+}
+
+void AudioManager::setSEVolume(float volume)
+{
+    //AudioEngine::setVolume(id, volume) は今流れているidの音量だけを変更するが
+    //seの場合は一つ一つの音が短く、全てのse共通で音量管理したいためここでは不要
+    _seVolume = volume;
+}
+
+float AudioManager::getSEVolume()
+{
+    return _seVolume;
 }

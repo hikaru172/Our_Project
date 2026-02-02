@@ -3,6 +3,8 @@
 
 #include "cocos2d.h" 
 
+USING_NS_CC;
+
 enum class AnimState {
     Idle,
     Walk,
@@ -14,6 +16,7 @@ struct CharacterInput {
     bool left = false;
     bool right = false;
     bool up = false;
+    bool down = false;
     bool jump = false;
 };
 
@@ -27,7 +30,7 @@ public:
     virtual bool init(cocos2d::Vec2, std::string);
 
 
-    void update(float, const CharacterInput&);
+    void update(const CharacterInput&, const std::vector<EventKeyboard::KeyCode>&);
 
     void onGround();
     void onHitLeft();
@@ -35,6 +38,8 @@ public:
     void onHitRight();
     void onCBHitRight();
     void onHitLadder();
+    void onEnterWater();
+
 
     void onReleaseGround();
     void onReleaseLeft();
@@ -49,6 +54,14 @@ public:
     bool canMoveRight() const;
     bool canJump() const;
 
+    void setTriangle();
+    void removeTriangle();
+
+    bool iswater();
+    void setIdle();
+
+    void changeAnimation(AnimState state);
+
 private:
 
     AnimState _state = AnimState::Idle;
@@ -62,17 +75,19 @@ private:
     cocos2d::Animate* _jumpAnim2;
     cocos2d::Animate* _climbAnim1;
     cocos2d::Animate* _climbAnim2;
+    cocos2d::Animate* _sinkAnim1;
+    cocos2d::Animate* _sinkAnim2;
 
     void initAnimations1();
     void initAnimations2();
-    void changeAnimation(AnimState state);
 
     bool _leftlimited = false;
     bool _rightlimited = false;
     bool _CBleftlimited = false;
     bool _CBrightlimited = false;
-    bool _jumplimited = false;
+    bool _jumplimited = true;
     bool _climblimited = true;
+    bool _iswater = false;
 };
 
 #endif //__CHARACTERS_H__

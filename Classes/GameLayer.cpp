@@ -5,6 +5,13 @@
 #include "Character.h"
 #include "Switch.h"
 #include "Ladder.h"
+#include "GoalFlag.h"
+#include "StageLoader.h"
+#include "UILayer.h"
+#include "AudioManager.h"
+#include "Water.h"
+#include "Bridge.h"
+#include "StarCoin.h"
 #include <iostream>
 #include <cmath>
 
@@ -26,7 +33,7 @@ bool GameLayer::init(int stageNumber) {
         return false;
     }
 
-    this->scheduleUpdate();  //‚±‚ê‚ğ‘‚©‚È‚¢‚Æupdate()‚ªŒÄ‚Î‚ê‚È‚¢
+    this->scheduleUpdate();  //ã“ã‚Œã‚’æ›¸ã‹ãªã„ã¨update()ãŒå‘¼ã°ã‚Œãªã„
 
     _stageNumber = stageNumber;
 
@@ -40,12 +47,16 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* chara = nullptr;
         PhysicsBody* platform = nullptr;
         PhysicsBody* CB = nullptr;
-        PhysicsBody* Switch = nullptr;
+        PhysicsBody* Swi = nullptr;
         PhysicsBody* Ladder = nullptr;
+        PhysicsBody* Flag = nullptr;
+        PhysicsBody* Water = nullptr;
+        PhysicsBody* Bridge = nullptr;
+        PhysicsBody* Star = nullptr;
 
-        // Õ“Ëî•ñ‚ğæ“¾
+        // è¡çªæƒ…å ±ã‚’å–å¾—
         auto contactData = contact.getContactData();
-        float normalX = contactData->normal.x; //normal‚ÍA‚ªB‚ğ‰Ÿ‚·•ûŒü
+        float normalX = contactData->normal.x; //normalã¯AãŒBã‚’æŠ¼ã™æ–¹å‘
         float normalY = contactData->normal.y;
 
         if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x02){
@@ -61,11 +72,11 @@ bool GameLayer::init(int stageNumber) {
         
         if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x04) {
             chara = bodyA;
-            Switch = bodyB;
+            Swi = bodyB;
         }
         else if (bodyA->getCategoryBitmask() == 0x04 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
-            Switch = bodyA;
+            Swi = bodyA;
             normalX *= -1;
             normalY *= -1;
         }
@@ -81,13 +92,57 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
-        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x16) {
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x10) {
             chara = bodyA;
             Ladder = bodyB;
         }
-        else if (bodyA->getCategoryBitmask() == 0x16 && bodyB->getCategoryBitmask() == 0x01) {
+        else if (bodyA->getCategoryBitmask() == 0x10 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
             Ladder = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x20) {
+            chara = bodyA;
+            Flag = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x20 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Flag = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x40) {
+            chara = bodyA;
+            Water = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x40 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Water = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x80) {
+            chara = bodyA;
+            Bridge = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x80 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Bridge = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x100) {
+            chara = bodyA;
+            Star = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x100 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Star = bodyA;
             normalX *= -1;
             normalY *= -1;
         }
@@ -98,48 +153,100 @@ bool GameLayer::init(int stageNumber) {
         auto charabody = _chara->getPhysicsBody();
         auto otherbody = _other->getPhysicsBody();
 
-        if (normalY < -0.5f && chara->getVelocity().y <= 0) { //ƒLƒƒƒ‰ƒNƒ^[‚Ì‘«‚Æ‰º‚ÌƒIƒuƒWƒFƒNƒg‚ªÚG
+        if (dynamic_cast<Character*>(chara->getNode()) != _chara) { //æ“ä½œä¸­ã®ã‚­ãƒ£ãƒ©ã¨ä»Šæ¥è§¦ã—ãŸã‚­ãƒ£ãƒ©ãŒç•°ãªã‚‹å ´åˆ
+            if (normalY < -0.5f && Swi) {
+                _charaswitchPressed = true;
+                auto sw = dynamic_cast<Switch*>(Swi->getNode());
+                _on_switch_kind.push_back(sw->get_kind());
+                if (dynamic_cast<Character*>(chara->getNode())->getTag() == 1)
+                    _chara1switchPressed = true;
+                else 
+                    _chara2switchPressed = true;
+            }
+            else if (Water) {
+                _other->onEnterWater();
+                _chara_dead = true;
+                _currentKey.clear();
+            }
+            else if (Flag) {
+                auto flag = dynamic_cast<GoalFlag*>(Flag->getNode());
+                flag->getFlag(tag, _stageRoot);
+            }
+            else if (Star) {
+                auto star = dynamic_cast<StarCoin*>(Star->getNode());
+                star->getStar();
+                _isStar = true;
+            }
+            return true;
+        }
+
+        if (Flag) {
+            //getNode()ã¯Node*å‹ã§è¿”ã£ã¦ãã‚‹ãŸã‚ã‚­ãƒ£ã‚¹ãƒˆ
+            auto flag = dynamic_cast<GoalFlag*>(Flag->getNode());
+            flag->getFlag(tag, _stageRoot);
+            return true;
+        }
+
+        if (Ladder) {
+            _chara->onHitLadder();
+            return true;
+        }
+
+        if (Water) {
+            _chara->onEnterWater();
+            _chara_dead = true;
+            _currentKey.clear();
+            return true;
+        }
+
+        if (Bridge) {
+            if (normalY > 0.5f || normalX < -0.6f || normalX > 0.6f) {
+                return false;
+            }
+            else if(normalY < -0.5f) {
+                _chara->onGround();
+                return true;
+            }
+        }
+
+        if (Star) {
+            auto star = dynamic_cast<StarCoin*>(Star->getNode());
+            star->getStar();
+            _isStar = true;
+            return true;
+        }
+
+        if (normalY < -0.5f && chara->getVelocity().y <= 0) { //ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®è¶³ã¨ä¸‹ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒæ¥è§¦
             _chara->onGround();
+            CCLOG("atatta");
+            _other->onGround();
             chara->setVelocity(Vec2(vel.x, 0.0f));
-            if (Switch) {
+            if (Swi) {
                 _switchPressed = true;
-            }
-            else if (Ladder) {
-                _chara->onHitLadder();
-                _chara->onReleaseGround();
+                auto sw = dynamic_cast<Switch*>(Swi->getNode());
+                _on_switch_kind.push_back(sw->get_kind());
             }
         }
 
-        if (normalY > 0.5f && chara->getVelocity().y >= 0) { //ƒLƒƒƒ‰ƒNƒ^[‚Æã‚ÌƒIƒuƒWƒFƒNƒg‚ªÚG
-            if (Ladder) {
-                _chara->onHitLadder();
-                _chara->onReleaseGround();
-            }
-        }
-
-        if (normalX < -0.6f) { //ƒLƒƒƒ‰ƒNƒ^[‚Ì¶‘¤‚Æ¶‚ÌƒIƒuƒWƒFƒNƒg‚ªÚG
+        if (normalX < -0.6f) { //ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®å·¦å´ã¨å·¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒæ¥è§¦
             if (CB && charabody->getTag() == tag)
                 _chara->onCBHitLeft();
             else if (CB && otherbody->getTag() == tag)
                 _other->onCBHitLeft();
-            else if (Ladder)
-                _chara->onHitLadder();
-            else 
+            else if(platform || Swi)
                 _chara->onHitLeft();
         }
 
-        if (normalX > 0.6f) { //ƒLƒƒƒ‰ƒNƒ^[‚Ì‰E‘¤‚Æ‰E‚ÌƒIƒuƒWƒFƒNƒg‚ªÚG
+        if (normalX > 0.6f) { //ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®å³å´ã¨å³ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒæ¥è§¦
             if (CB && charabody->getTag() == tag)
                 _chara->onCBHitRight();
             else if (CB && otherbody->getTag() == tag)
                 _other->onCBHitRight();
-            else if (Ladder)
-                _chara->onHitLadder();
-            else
+            else if (platform || Swi)
                 _chara->onHitRight();
         }
 
-        return true; //true‚ğ•Ô‚·‚ÆÕ“Ëˆ—Œp‘±
+        return true; //trueã‚’è¿”ã™ã¨è¡çªå‡¦ç†ç¶™ç¶š
     };
 
     contactListener->onContactSeparate = [&](PhysicsContact& contact) {
@@ -149,8 +256,12 @@ bool GameLayer::init(int stageNumber) {
         PhysicsBody* chara = nullptr;
         PhysicsBody* platform = nullptr;
         PhysicsBody* CB = nullptr;
-        PhysicsBody* Switch = nullptr;
+        PhysicsBody* Swi = nullptr;
         PhysicsBody* Ladder = nullptr;
+        PhysicsBody* Flag = nullptr;
+        PhysicsBody* Water = nullptr;
+        PhysicsBody* Bridge = nullptr;
+        PhysicsBody* Star = nullptr;
 
         auto contactData = contact.getContactData();
         float normalX = contactData->normal.x;
@@ -168,11 +279,11 @@ bool GameLayer::init(int stageNumber) {
         }
         if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x04) {
             chara = bodyA;
-            Switch = bodyB;
+            Swi = bodyB;
         }
         else if (bodyA->getCategoryBitmask() == 0x04 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
-            Switch = bodyA;
+            Swi = bodyA;
             normalX *= -1;
             normalY *= -1;
         }
@@ -188,13 +299,57 @@ bool GameLayer::init(int stageNumber) {
             normalY *= -1;
         }
 
-        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x16) {
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x10) {
             chara = bodyA;
             Ladder = bodyB;
         }
-        else if (bodyA->getCategoryBitmask() == 0x16 && bodyB->getCategoryBitmask() == 0x01) {
+        else if (bodyA->getCategoryBitmask() == 0x10 && bodyB->getCategoryBitmask() == 0x01) {
             chara = bodyB;
             Ladder = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x20) {
+            chara = bodyA;
+            Flag = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x20 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Flag = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x40) {
+            chara = bodyA;
+            Water = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x40 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Water = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x80) {
+            chara = bodyA;
+            Bridge = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x80 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Bridge = bodyA;
+            normalX *= -1;
+            normalY *= -1;
+        }
+
+        if (bodyA->getCategoryBitmask() == 0x01 && bodyB->getCategoryBitmask() == 0x100) {
+            chara = bodyA;
+            Star = bodyB;
+        }
+        else if (bodyA->getCategoryBitmask() == 0x100 && bodyB->getCategoryBitmask() == 0x01) {
+            chara = bodyB;
+            Star = bodyA;
             normalX *= -1;
             normalY *= -1;
         }
@@ -203,18 +358,29 @@ bool GameLayer::init(int stageNumber) {
         auto charabody = _chara->getPhysicsBody();
         auto otherbody = _other->getPhysicsBody();
 
-        if (normalY < -0.5f) {
-            _chara->onReleaseGround();
-            if (Switch) {
-                _switchPressed = false;
-            }
-            else if (Ladder)
-                _chara->onReleaseLadder();
+        if (Ladder) {
+            _chara->onReleaseLadder();
+            return true;
         }
 
-        if (normalY > 0.5f) { 
-            if (Ladder) {
-                _chara->onReleaseLadder();
+        if (Water) {
+            return true;
+        }
+
+        auto vel = chara->getVelocity();
+
+        if (normalY < -0.5f) {
+            if (!Flag && vel.y > 10.0f) {
+                _chara->onReleaseGround();
+            }
+
+            if (Swi) {
+                _switchPressed = false;
+                auto sw = dynamic_cast<Switch*>(Swi->getNode());
+                kind_of ki = sw->get_kind();
+                auto it = std::find(_on_switch_kind.begin(), _on_switch_kind.end(), ki);
+                if (it != _on_switch_kind.end())
+                    _on_switch_kind.erase(it);
             }
         }
 
@@ -223,8 +389,6 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onCBReleaseLeft();
             else if(CB && otherbody->getTag() == tag)
                 _other->onCBReleaseLeft();
-            else if (Ladder)
-                _chara->onReleaseLadder();
             else
                 _chara->onReleaseLeft();
         }
@@ -233,30 +397,44 @@ bool GameLayer::init(int stageNumber) {
                 _chara->onCBReleaseRight();
             else if (CB && otherbody->getTag() == tag)
                 _other->onCBReleaseRight();
-            else if (Ladder)
-                _chara->onReleaseLadder();
             else
                 _chara->onReleaseRight();
         }
     };
 
-    //contactlistener“o˜^
+    //contactlistenerç™»éŒ²
     this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
 
 
-    //ƒL[“ü—Ílistener«
+    //ã‚­ãƒ¼å…¥åŠ›listenerâ†“
     auto listener = EventListenerKeyboard::create();
-    listener->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event* event) { //[]‚Íƒ‰ƒ€ƒ_®(–³–¼ŠÖ”)
-        if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
+    listener->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event* event) { //[]ã¯ãƒ©ãƒ ãƒ€å¼(ç„¡åé–¢æ•°)
+        auto pause = dynamic_cast<UILayer*>(Director::getInstance()->getRunningScene()->getChildByName("UILayer"))->getPause();
+        if (pause || _chara_dead)
+            return;
+
+        if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
             _leftPressed = true;
-        if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+            _currentKey.push_back(keyCode);
+        }
+        if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
             _rightPressed = true;
-        if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
+            _currentKey.push_back(keyCode);
+        }
+        if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
             _upPressed = true;
-        if (keyCode == EventKeyboard::KeyCode::KEY_SPACE)
-            if(_chara->canJump())
+            _currentKey.push_back(keyCode);
+        }
+        if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {    //ã»ã‹ã®çŸ¢å°ã‚­ãƒ¼ã¨é‡ã­ã¦æŠ¼ã—ãŸã¨ãã«ã‚¸ãƒ£ãƒ³ãƒ—ã§ããªã„ä¸å…·åˆä¿®æ­£ã®ãŸã‚
+            _downPressed = true;
+        }
+        if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
+            if (_chara->canJump()) {
                 _jumpPressed = true;
-        };
+            }
+        }
+        /*_currentKey.push_back(keyCode);*/
+    };
 
 
     listener->onKeyReleased = [&](EventKeyboard::KeyCode keyCode, Event* event) {
@@ -266,17 +444,25 @@ bool GameLayer::init(int stageNumber) {
             _rightPressed = false;
         if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
             _upPressed = false;
-        };
+        if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
+            _downPressed = false;
+
+        auto it = std::find(_currentKey.begin(), _currentKey.end(), keyCode);
+        if (it != _currentKey.end())
+            _currentKey.erase(it);
+
+    };
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
 
     _stageRoot = Node::create();
     _stageRoot->setPosition(Vec2::ZERO);
+    _stageRoot->setName("root");
     this->addChild(_stageRoot);
 
-    // ƒXƒe[ƒW‰Šú‰»ˆ—
-    //init()‚ÆsetupStage()‚ğ•ª‚¯‚é‚±‚Æ‚ÅAƒXƒe[ƒW‚²‚Æ‚ÉˆÙ‚È‚é‚à‚Ì‚ÍsetupStage()‚ğŒÄ‚×‚Î‰Šú‰»‚Å‚«‚é‚æ‚¤‚É
+    // ã‚¹ãƒ†ãƒ¼ã‚¸åˆæœŸåŒ–å‡¦ç†
+    //init()ã¨setupStage()ã‚’åˆ†ã‘ã‚‹ã“ã¨ã§ã€ã‚¹ãƒ†ãƒ¼ã‚¸ã”ã¨ã«ç•°ãªã‚‹ã‚‚ã®ã¯setupStage()ã‚’å‘¼ã¹ã°åˆæœŸåŒ–ã§ãã‚‹ã‚ˆã†ã«
     setupStage();
 
     return true;
@@ -284,17 +470,22 @@ bool GameLayer::init(int stageNumber) {
 
 
 void GameLayer::setupStage() {
-    if (_stageRoot != nullptr) {
-        _stageRoot->removeAllChildren();
+    if (_stageRoot->getChildrenCount() != 0) {
+        _stageRoot->removeAllChildrenWithCleanup(true);
+        _switch.clear();
+        _block.clear();
     }
+
+    AudioManager::stopBGM();
+    AudioManager::playBGM("Sounds/bgm.mp3", true);
 
     _chara1 = Character::create(Vec2(120.0f, 280.0f), "characters/character_green_idle.png");
     _chara2 = Character::create(Vec2(70.0f, 280.0f), "characters/character_beige_idle.png");
     _stageRoot->addChild(_chara1, 1);
     _stageRoot->addChild(_chara2, 0);
 
-    _chara1->onGround();
-    _chara2->onGround();
+    _on_switch_kind.clear();
+    _currentKey.clear();
 
     _chara1->reset_flip();
     _chara2->reset_flip();
@@ -304,8 +495,10 @@ void GameLayer::setupStage() {
     _other = _chara2;
     _chara->setTag(1);
 
-    _chara->getPhysicsBody()->setTag(10);
-    _other->getPhysicsBody()->setTag(20);
+    _chara->getPhysicsBody()->setTag(1);
+    _other->getPhysicsBody()->setTag(2);
+
+    _chara_dead = false;
 
     _total = 0.0f;
     _total1 = 0.0f;
@@ -319,43 +512,25 @@ void GameLayer::setupStage() {
     _chara1switchPressed = false;
     _chara2switchPressed = false;
 
-    //‚±‚±‚©‚ç‰º‚ÉƒXƒe[ƒW‚²‚Æ‚ÌƒIƒuƒWƒFƒNƒg”z’uˆ—‚ğ’Ç‰Á‚µ‚Ä‚¢‚­
+    _sumTime = 0.0f;
+    _isStar = false;
 
-    auto start_position = Vec2(0.0f, 0.0f);
-    auto end_position = Vec2(10.0f, 3.0f);
-    auto platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
-    _stageRoot->addChild(platform);
+    //ã‚¹ãƒ†ãƒ¼ã‚¸æƒ…å ±èª­ã¿è¾¼ã¿
+    std::string stageinfo = "stage_info/stage";
+    stageinfo.append(StringUtils::format("%d.json", _stageNumber));
+    StageLoader::load(stageinfo, _stageRoot);
+    _end_point = StageLoader::endload(stageinfo);
+    _end_point = (_end_point + 1) * 48.0f;
 
-
-    start_position = Vec2(12, 2);
-    end_position = Vec2(16, 5);
-    platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
-    _stageRoot->addChild(platform);
-
-    start_position = Vec2(17, 2);
-    end_position = Vec2(20, 7);
-    _block = Block::create(start_position, end_position, "Blocks/block_trans_red.png");
-    _stageRoot->addChild(_block);
-
-
-    start_position = Vec2(21, 2);
-    end_position = Vec2(24, 5);
-    platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
-    _stageRoot->addChild(platform);
-
-    auto position = Vec2(14, 6);
-    _switch = Switch::create(position, "gimic/switch_red.png");
-    _stageRoot->addChild(_switch);
-
-    start_position = Vec2(4, 7);
-    end_position = Vec2(4, 10);
-    _ladder = Ladder::create(start_position, end_position, "ladder/ladder");
-    _stageRoot->addChild(_ladder);
-
-    start_position = Vec2(5, 4);
-    end_position = Vec2(5, 7);
-    platform = Platform::create(start_position, end_position, "Platforms/terrain_grass_block");
-    _stageRoot->addChild(platform);
+    for (auto child : _stageRoot->getChildren())
+    {
+        //dynamic_castã¯ã€ã“ã®å ´åˆã€childãŒBlockã‚¯ãƒ©ã‚¹ã‹ãã®æ´¾ç”Ÿã‚¯ãƒ©ã‚¹ã ã£ãŸã‚‰ Block*å‹ã«å¤‰æ›ã—ã€é•ã£ãŸã‚‰nullptrã¨ã„ã†
+        //æ¡ä»¶ä»˜ãã‚­ãƒ£ã‚¹ãƒˆã®ãŸã‚ã“ã®ã‚ˆã†ã«æ¡ä»¶ã¨ã—ã¦æ‰±ã†ã“ã¨ãŒã§ãã‚‹
+        if (auto bl = dynamic_cast<Block*>(child))
+            _block.push_back(bl);
+        else if (auto sw = dynamic_cast<Switch*>(child))
+            _switch.push_back(sw);
+    }
 
 }
 
@@ -363,52 +538,92 @@ void GameLayer::setupStage() {
 
 void GameLayer::update(float dt){
 
-    CharacterInput input;
-    input.left = _leftPressed;
-    input.right = _rightPressed;
-    input.jump = _jumpPressed;
-    input.up = _upPressed;
+    _input.left = _leftPressed;
+    _input.right = _rightPressed;
+    _input.jump = _jumpPressed;
+    _input.up = _upPressed;
+    _input.down = _downPressed;
 
-    _chara->update(dt, input);
+    _chara->update(_input, _currentKey);
     _jumpPressed = false;
 
     float screenHalf = Director::getInstance()->getVisibleSize().width * 0.5f;
     float charaX = _chara->getPositionX();
     float speed = 200.0f;
-    if (charaX > screenHalf) {
-        if (_leftPressed && _chara->canMoveLeft()) {
-            _total += dt;
-        }
-        else if (_rightPressed && _chara->canMoveRight()) {
-            _total -= dt;
-        }
-    }
 
-    if (_total * speed > 0.0f) {
+    _sumTime += dt;
+
+    //  GameLayerãŒæ©Ÿèƒ½ã—ã¦ã„ãªã„ã¨ãã«ã€è¦‹ã‹ã‘ä¸Šã®æ™‚é–“ã‚’åœæ­¢ã•ã›ãŸã„ãŒã€ä»Šã®ã¾ã¾ã ã¨ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãŒèµ·ç‚¹ã¨ãªã£ã¦ã—ã¾ã£ã¦ã„ã‚‹ã®ãŒå•é¡Œ
+    if (_pause)
+        _sumTime -= dt;
+
+    //auto diff = _end_point - Director::getInstance()->getVisibleSize().width;
+
+    if (_total * speed >= 0.0f) {
         _total = 0.0f;
         this->setPositionX(0.0f);
     }
+    //else if (_total * speed < -diff) {
+    //    _total = -diff / speed;
+    //    this->setPositionX(-diff);
+    //}
     else {
         this->setPositionX(_total * speed);
     }
 
     if (_switchPressed || _charaswitchPressed) {
-        _switch->setState(State::On);
-        _block->setState(State::On);
-    }
-    else {
+        for (auto sw : _switch) {
+            if (std::find(_on_switch_kind.begin(), _on_switch_kind.end(), sw->get_kind()) != _on_switch_kind.end())
+                sw->setState(State::On);
+            else
+                sw->setState(State::Off);
+        }
+        for (auto bl : _block) {
+            if (std::find(_on_switch_kind.begin(), _on_switch_kind.end(), bl->get_kind()) != _on_switch_kind.end())
+                bl->setState(State::On);
+            else
+                bl->setState(State::Off);
+        }
+    } else {
         _chara->onCBReleaseLeft();
         _chara->onCBReleaseRight();
-        _switch->setState(State::Off);
-        _block->setState(State::Off);
+        for (auto sw : _switch) {
+            sw->setState(State::Off);
+        }
+        for (auto bl : _block) {
+            bl->setState(State::Off);
+        }
     }
+
+    float layer_right = Director::getInstance()->getVisibleSize().width - this->getPositionX();
+
+    if (charaX > screenHalf && _end_point != 0.0) {
+        if (_currentKey.empty()) {
+            return;
+        }
+        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_LEFT_ARROW && _chara->canMoveLeft()) {
+            _total += dt;
+        }
+        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_RIGHT_ARROW && _chara->canMoveRight() && layer_right < _end_point) {
+            _total -= dt;
+        }
+        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_UP_ARROW && _input.left && _chara->canMoveLeft()) {
+            _total += dt;
+        }
+        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_UP_ARROW && _input.right && _chara->canMoveRight() && layer_right < _end_point) {
+            _total -= dt;
+        }
+    } 
 }
 
 
 void GameLayer::chara_change() {
     auto now_chara_num = _chara->getTag();
-
-    float screenHalf = Director::getInstance()->getVisibleSize().width * 0.5f;
+    _currentKey.clear();
+    _chara->update(_input, _currentKey);
+    _chara->setIdle();
+    _chara->changeAnimation(AnimState::Idle);
+    _chara->onGround();
 
     if (now_chara_num == 1) {
         _chara1 = _chara;
@@ -419,8 +634,10 @@ void GameLayer::chara_change() {
         _total = _total2;
         _chara1fixed = _charafixed;
         _charafixed = _chara2fixed;
+        _chara1->removeTriangle();
+        _chara2->setTriangle();
         _chara1->setLocalZOrder(0);
-        _chara2->setLocalZOrder(1); //”š‘å‚«‚¢‚Ù‚Çè‘O‚É—ˆ‚é
+        _chara2->setLocalZOrder(1); //æ•°å­—å¤§ãã„ã»ã©æ‰‹å‰ã«æ¥ã‚‹
         _chara1switchPressed = _switchPressed;
         _charaswitchPressed = _chara1switchPressed;
         _switchPressed = _chara2switchPressed;
@@ -435,6 +652,8 @@ void GameLayer::chara_change() {
         _total = _total1;
         _chara2fixed = _charafixed;
         _charafixed = _chara1fixed;
+        _chara2->removeTriangle();
+        _chara1->setTriangle();
         _chara2->setLocalZOrder(0);
         _chara1->setLocalZOrder(1);
         _chara2switchPressed = _switchPressed;
@@ -442,4 +661,16 @@ void GameLayer::chara_change() {
         _switchPressed = _chara1switchPressed;
     }
 
+    AudioManager::playSE("Sounds/click.mp3");
+}
+
+int GameLayer::getStagenumber() {
+    return _stageNumber;
+}
+float GameLayer::getSumtime() {
+    return _sumTime;
+}
+
+bool GameLayer::getStar() {
+    return _isStar;
 }

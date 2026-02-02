@@ -1,0 +1,38 @@
+{
+  "objects": [
+    {
+      "type": "Platform",
+      "start": [ 0, 0 ],
+      "end": [ 50, 3 ],
+      "image": "Platforms/terrain_grass_block"
+    },
+    {
+      "type": "Ladder",
+      "start": [ 10, 4 ],
+      "end": [ 10, 10 ],
+      "image": "ladder/ladder"
+    },
+    {
+      "type": "Bridge",
+      "start": [ 8, 11 ],
+      "end": [ 13, 11 ],
+      "image": "Platforms/bridge_logs"
+    },
+    {
+      "type": "GoalFlag",
+      "position": [ 6, 4 ],
+      "image": "gimic/flag_green.png"
+    },
+    {
+      "type": "GoalFlag",
+      "position": [ 17, 4 ],
+      "image": "gimic/flag_yellow.png"
+    },
+    {
+      "type": "StarCoin",
+      "position": [ 12, 12 ],
+      "image": "gimic/star.png"
+    }
+  ],
+  "clear_time": 30.0
+}

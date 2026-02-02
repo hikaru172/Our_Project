@@ -28,6 +28,11 @@ bool StageSelectScene::init()
     //originは見えている画面領域の左下座標
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+    // 背景画像
+    auto back = Sprite::create("BG/stageSelect_back.png");
+    back->setPosition(visibleSize / 2.0f);
+    this->addChild(back, 0);
+
     //VectorはCocos2d-x 独自のコンテナクラスで、型がMenuItem*なので、メニュー項目（ボタンなど）のポインタをまとめて管理する入れ物buttonsを定義している
     Vector<MenuItem*> buttons;
 
