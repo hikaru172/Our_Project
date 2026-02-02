@@ -12,7 +12,7 @@
 
 ## デモ動画
 - 以下のリンク先に限定公開で載せています。
-- https://youtu.be/PvEG3xc9OTI
+- https://www.youtube.com/watch?v=ThqE6ii98aQ
 
 ## 使用技術
 - 開発言語：C++
