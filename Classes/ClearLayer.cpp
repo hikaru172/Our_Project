@@ -30,7 +30,7 @@ bool ClearLayer::init() {
     this->addChild(bg);
 
     // ポップアップ
-    auto popup = Label::createWithTTF("CLEAR!", "fonts/RiiPopkkR.otf", 128);
+    auto popup = Label::createWithTTF("CLEAR!", "fonts/nikumaru.otf", 128);
     popup->setPosition(Director::getInstance()->getVisibleSize() / 2.0f);
     this->addChild(popup);
     popup->setScale(0.0f);
