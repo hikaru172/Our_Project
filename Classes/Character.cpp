@@ -195,6 +195,10 @@ void Character::update(const CharacterInput& input, const std::vector<EventKeybo
     Vec2 vel = body->getVelocity();
     float speed = 200.0f;
 
+    // ƒLƒƒƒ‰‚ª‚‚¢‚Æ‚±‚ë‚©‚ç~‚è‚½‚Æ‚«‚ÉƒWƒƒƒ“ƒv‚Å‚«‚È‚­‚È‚é‚æ‚¤‚É‚·‚é‚½‚ß
+    if (vel.y < -1.0f)
+        this->onReleaseGround();
+
     if (_iswater)
         return;
 

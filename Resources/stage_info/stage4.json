@@ -1,0 +1,60 @@
+{
+  "objects": [
+    {
+      "type": "Water",
+      "start": [ 9, 0 ],
+      "end": [ 17, 1 ],
+      "image": "Water/Water"
+    },
+    {
+      "type": "Platform",
+      "start": [ 0, 0 ],
+      "end": [ 9, 3 ],
+      "image": "Platforms/terrain_grass_block"
+    },
+    {
+      "type": "Platform",
+      "start": [ 17, 0 ],
+      "end": [ 50, 3 ],
+      "image": "Platforms/terrain_grass_block"
+    },
+    {
+      "type": "Switch",
+      "position": [ 7, 4 ],
+      "image": "gimic/switch_blue.png"
+    },
+    {
+      "type": "Block",
+      "start": [ 10, 3 ],
+      "end": [ 16, 3 ],
+      "image": "Blocks/block_trans_blue.png"
+    },
+    {
+      "type": "Switch",
+      "position": [ 19, 4 ],
+      "image": "gimic/switch_blue.png"
+    },
+    {
+      "type": "Block",
+      "start": [ 20, 6 ],
+      "end": [ 22, 6 ],
+      "image": "Blocks/block_trans_blue.png"
+    },
+    {
+      "type": "GoalFlag",
+      "position": [ 17, 4 ],
+      "image": "gimic/flag_green.png"
+    },
+    {
+      "type": "GoalFlag",
+      "position": [ 23, 4 ],
+      "image": "gimic/flag_yellow.png"
+    },
+    {
+      "type": "StarCoin",
+      "position": [ 21, 9 ],
+      "image": "gimic/star.png"
+    }
+  ],
+  "clear_time": 30.0
+}

@@ -218,6 +218,7 @@ bool GameLayer::init(int stageNumber) {
 
         if (normalY < -0.5f && chara->getVelocity().y <= 0) { //キャラクターの足と下のオブジェクトが接触
             _chara->onGround();
+            CCLOG("atatta");
             _other->onGround();
             chara->setVelocity(Vec2(vel.x, 0.0f));
             if (Swi) {
@@ -366,13 +367,12 @@ bool GameLayer::init(int stageNumber) {
             return true;
         }
 
-        if (Bridge) {
-            return true;
-        }
+        auto vel = chara->getVelocity();
 
-        if (normalY < -0.5f) {
-            if (!Flag)
+        if (normalY < -0.5f && vel.y > 10.0f) {
+            if (!Flag) {
                 _chara->onReleaseGround();
+            }
 
             if (Swi) {
                 _switchPressed = false;
@@ -595,6 +595,12 @@ void GameLayer::update(float dt){
             _total += dt;
         }
         else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_RIGHT_ARROW && _chara->canMoveRight()) {
+            _total -= dt;
+        }
+        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_UP_ARROW && _input.left && _chara->canMoveLeft()) {
+            _total += dt;
+        }
+        else if (_currentKey.back() == EventKeyboard::KeyCode::KEY_UP_ARROW && _input.right && _chara->canMoveRight()) {
             _total -= dt;
         }
     }
